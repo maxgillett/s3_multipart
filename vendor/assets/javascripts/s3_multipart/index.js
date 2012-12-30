@@ -1,0 +1,1 @@
+//=require jquery-fileupload/s3_multipart
