@@ -40,6 +40,7 @@ module S3_Multipart
 
 end
 
+require 's3_multipart/http/net_http'
 require 's3_multipart/uploader'
 require 's3_multipart/railtie'
 require 's3_multipart/engine'

@@ -1,4 +1,3 @@
-require 'http/net_http'
 require 'uploader/config'
 require "xmlsimple"
 
@@ -22,7 +21,7 @@ module S3_Multipart
 
     def sign_batch(options)
       parts = options[:content_lengths].split('-').each_with_index.map do |len, i|
-        sign_part(options.merge!({content_length: len, part_number: i+1})
+        sign_part(options.merge!({content_length: len, part_number: i+1}))
       end
     end
 
@@ -37,7 +36,7 @@ module S3_Multipart
       url = "/#{options[:object_name]}?uploadId=#{options[:upload_id]}"
 
       headers = { content_type: options[:content_type],
-                  content_length: options[:content_length] 
+                  content_length: options[:content_length],
                   body: format_part_list_in_xml(options) }
                 
       headers[:authorization], headers[:date] = sign_request verb: 'POST', url: url, content_type: 'application/xml'

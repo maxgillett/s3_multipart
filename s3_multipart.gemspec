@@ -1,6 +1,7 @@
 # encoding: utf-8
 
-require 's3_uploader/version'
+$:.push File.expand_path("../lib", __FILE__)
+require 's3_multipart/version'
 
 Gem::Specification.new do |s|
   s.name        = "s3_multipart"
@@ -12,6 +13,7 @@ Gem::Specification.new do |s|
   s.description = %q{See github for installation and configuration }
 
   s.add_dependency "uuid"
+  s.add_dependency "xmlsimple"
 
   s.add_development_dependency "rails"
   s.add_development_dependency "sqlite3"
