@@ -1,4 +1,4 @@
-module S3_Multipart
+module S3Multipart
   class Http
     require 'net/http'
 
@@ -7,7 +7,7 @@ module S3_Multipart
     def initialize(method, path, options)
       @method = method
       @path = path
-      @headers = options.delete(:headers)
+      @headers = options
     end
 
     class << self
@@ -24,16 +24,16 @@ module S3_Multipart
       end
     end
 
-    private
-
     def perform
       request = request_class.new(path)
       headers.each do |key, val|
-        request[key.to_s.capitalize] = val
+        request[key.to_s.split("_").map(&:capitalize).join("-")] = val
       end
       
       @response = http.request(request)
     end
+
+    private
 
     def http 
       Net::HTTP.new('bitcast-bucket.s3.amazonaws.com', 80)

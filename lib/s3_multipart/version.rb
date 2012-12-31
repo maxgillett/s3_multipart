@@ -1,3 +1,3 @@
-module S3_Multipart
+module S3Multipart
   VERSION = "0.0.1"
 end

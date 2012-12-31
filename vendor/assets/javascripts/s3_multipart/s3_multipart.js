@@ -199,9 +199,9 @@
 
       _.each(files, function(file, key) {
         //Do validation for each file before creating a new upload object
-        if (!file.type.match(/video/)) {
-          return false;
-        }
+        // if (!file.type.match(/video/)) {
+        //   return false;
+        // }
         if (file.size < 5000000) {
           return false;
         }
@@ -266,11 +266,12 @@
         this.init = function() {
           upload.initiateMultipart(upload, function(obj) {
             console.log('Multipart initiation successful');
-            var upload_id = upload.upload_id = obj.id
+            var id = upload.id = obj.id
+              , upload_id = upload.upload_id = obj.upload_id
               , object_name = upload.object_name = obj.name
               , parts = upload.parts;
 
-            upload.signPartRequests(object_name, upload_id, parts, function(response) {
+            upload.signPartRequests(id, object_name, upload_id, parts, function(response) {
               _.each(parts, function(part, key) {
                 var xhr = part.xhr;
 
@@ -321,8 +322,10 @@
     S3MP.prototype.initiateMultipart = function(upload, cb) {
       var url, body, request, response;
 
-      url = '/initiateS3upload';
-      body = JSON.stringify({object_name: upload.name, content_type: upload.type});
+      url = '/s3_multipart/uploads';
+      body = JSON.stringify({ object_name  : upload.name,
+                              content_type : upload.type
+                            });
 
       request = this.createXhrRequest('POST', url, function(xhr) {
         if (this.readyState !== 4) {
@@ -346,15 +349,20 @@
 
     };
 
-    S3MP.prototype.signPartRequests = function(object_name, upload_id, parts, cb) {
-      var url, response;
+    S3MP.prototype.signPartRequests = function(id, object_name, upload_id, parts, cb) {
+      var content_lengths, url, body, request, response;
 
-      url = "signS3parts?object_name=" + object_name + "&upload_id=" + upload_id + "&content_lengths=" +
-             _.reduce(parts, function(memo, part) {
-              return memo + "-" + part.size;
-            }, parts[0].size);
+      content_lengths = _.reduce(parts, function(memo, part) {
+        return memo + "-" + part.size;
+      }, parts[0].size);
 
-      this.createXhrRequest('GET', url, function(xhr) {
+      url = "s3_multipart/uploads/"+id;
+      body = JSON.stringify({ object_name     : object_name,
+                              upload_id       : upload_id,
+                              content_lengths : content_lengths
+                            });
+
+      request = this.createXhrRequest('PUT', url, function(xhr) {
         if (this.readyState !== 4) {
           // Retry this chunk and give an error message
           return false;
@@ -366,13 +374,19 @@
 
         response = JSON.parse(this.responseText);
         cb(response);     
-      }).send();
+      });
+
+      request.setRequestHeader('Content-Type', 'application/json');
+      request.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+      
+      request.send(body);
+
     };
 
     S3MP.prototype.completeMultipart = function(uploadObj, cb) {
-      var url, body, request;
+      var url, body, request, response;
 
-      url = 'completeS3upload';
+      url = 's3_multipart/uploads/'+uploadObj.id;
       body = JSON.stringify({ object_name    : uploadObj.object_name,
                               upload_id      : uploadObj.upload_id,
                               content_length : uploadObj.size,

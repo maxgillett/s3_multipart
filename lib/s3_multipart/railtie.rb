@@ -1,5 +1,5 @@
 if defined?(Rails)
-  module S3_Multipart
+  module S3Multipart
     class Railtie < Rails::Railtie
 
       initializer "s3_multipart.action_view" do 

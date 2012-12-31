@@ -1,9 +1,4 @@
-require 'uploader/config'
-require "xmlsimple"
-
-require 'uploader/config'
-
-module S3_Multipart
+module S3Multipart
   module Uploader
     def initiate(options)
       url = "/#{options[:object_name]}?uploads"
@@ -13,10 +8,10 @@ module S3_Multipart
 
       response = Http.post url, headers
       parsed_response_body = XmlSimple.xml_in(response.body)  
-    
-      return { "key"  => parsed_response["Key"][0],
-               "id"   => parsed_response["UploadId"][0],
-               "name" => object_name }
+
+      return { "key"  => parsed_response_body["Key"][0],
+               "upload_id"   => parsed_response_body["UploadId"][0],
+               "name" => options[:object_name] }
     end
 
     def sign_batch(options)
@@ -51,17 +46,18 @@ module S3_Multipart
       options.default = ""
       time = Time.now.strftime("%a, %d %b %Y %T %Z")
 
-      return [signed_request(time, options), Time]
+      return [calculate_authorization_hash(time, options), time]
     end
 
     private
 
     def calculate_authorization_hash(time, options)
+      date = time
       date = String.new(time).insert(0, "\nx-amz-date:") if from_upload_part?(options)
-      unsigned_request = "#{options[:verb]}\n#{options[:content_md5]}\n#{options[:content_type]}\n#{date}\n/#{Config.bucket_name}#{options[:url]}" 
-      signature = Base64.strict_encode64(OpenSSL::HMAC.digest('sha1', Config.s3_secret_key, unsigned_request))
+      unsigned_request = "#{options[:verb]}\n\n#{options[:content_type]}\n#{date}\n/#{Config.instance.bucket_name}#{options[:url]}" 
+      signature = Base64.strict_encode64(OpenSSL::HMAC.digest('sha1', Config.instance.s3_secret_key, unsigned_request))
       
-      authorization = "AWS" + " " + Config.s3_access_key + ":" + signature
+      authorization = "AWS" + " " + Config.instance.s3_access_key + ":" + signature
     end
 
     def from_upload_part?(options)

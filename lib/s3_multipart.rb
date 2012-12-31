@@ -1,9 +1,10 @@
 # encoding: utf-8
 
 require 'active_record'
+require 'xmlsimple'
 require 'uuid'
 
-module S3_Multipart
+module S3Multipart
 
   class << self
 
@@ -29,9 +30,9 @@ module S3_Multipart
     # Needs to be reworked to allow for different callbacks to be called for several upload forms
     def attach_uploader(&block)
       Upload.class_eval do
-        self.callback = block
-        def run_callback
-          callback.call(self)
+        self.on_complete_callback = block
+        def on_complete
+          on_complete_callback.call(self)
         end
       end
     end
@@ -40,10 +41,10 @@ module S3_Multipart
 
 end
 
-require 's3_multipart/http/net_http'
-require 's3_multipart/uploader'
 require 's3_multipart/railtie'
 require 's3_multipart/engine'
+require 's3_multipart/http/net_http'
+require 's3_multipart/uploader'
+require 's3_multipart/uploader/config'
 
-ActiveRecord::Base.extend S3_Multipart::ActiveRecord
-ActionView::Base.send :include, S3_Multipart::ActionViewHelpers::FormHelper
+ActiveRecord::Base.extend S3Multipart::ActiveRecord

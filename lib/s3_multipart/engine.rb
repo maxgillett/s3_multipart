@@ -1,8 +1,5 @@
-module S3_Multipart
+module S3Multipart
   class Engine < Rails::Engine
-    config.mount_at = '/'
-
-    paths["app/models"] = "lib/models"
-    paths["app/controllers"] = "lib/controllers"
+    isolate_namespace S3Multipart
   end
 end

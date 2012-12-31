@@ -1,1 +1,1 @@
-//=require jquery-fileupload/s3_multipart
+//=require s3_multipart

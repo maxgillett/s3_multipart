@@ -1,9 +1,10 @@
-module S3_Multipart
+module S3Multipart
   class UploadsController < ApplicationController
     def create
       begin
-        response = S3_Multipart::Uploader.initiate(params)
-        Upload.new(key: response[:key], upload_id: response[:id], name: response[:name])
+        response = Upload.initiate(params)
+        upload = Upload.create(key: response[:key], upload_id: response[:upload_id], name: response[:name])
+        response["id"] = upload["id"]
       rescue
         response = {error: 'There was an error initiating the upload'}
       ensure
@@ -11,7 +12,7 @@ module S3_Multipart
       end
     end
 
-    def put
+    def update
       return complete_upload if params[:parts]
       return sign_batch if params[:content_lengths]
       return sign_part if params[:content_length]
@@ -21,7 +22,7 @@ module S3_Multipart
 
     def sign_batch
       begin
-        response = S3_Multipart::Uploader.sign_batch(params)
+        response = S3Multipart::Uploader.sign_batch(params)
       rescue
         response = {error: 'There was an error in processing your upload'}
       ensure
@@ -31,18 +32,17 @@ module S3_Multipart
 
     def sign_part
       begin
-        response = S3_Multipart::Uploader.sign_part(params)
+        response = S3Multipart::Uploader.sign_part(params)
       rescue
         response = {error: 'There was an error in processing your upload'}
       ensure
         render :json => response
       end
     end
-    end
 
     def complete_upload
       begin
-        response = S3_Multipart::Uploader.complete(params)
+        response = S3Multipart::Uploader.complete(params)
         
         upload = Upload.find_by_upload_id(params[:upload_id])
         upload.update_attributes(location: response[:location])
