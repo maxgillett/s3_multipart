@@ -7,7 +7,8 @@ module S3Multipart
     def initialize(method, path, options)
       @method = method
       @path = path
-      @headers = options
+      @headers = options[:headers]
+      @body = options[:body]
     end
 
     class << self
@@ -29,6 +30,7 @@ module S3Multipart
       headers.each do |key, val|
         request[key.to_s.split("_").map(&:capitalize).join("-")] = val
       end
+      request.body = body if body
       
       @response = http.request(request)
     end

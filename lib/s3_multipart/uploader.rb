@@ -6,7 +6,7 @@ module S3Multipart
       headers = {content_type: options[:content_type]}
       headers[:authorization], headers[:date] = sign_request verb: 'POST', url: url, content_type: options[:content_type]
 
-      response = Http.post url, headers
+      response = Http.post url, {headers: headers}
       parsed_response_body = XmlSimple.xml_in(response.body)  
 
       return { "key"  => parsed_response_body["Key"][0],
@@ -28,18 +28,25 @@ module S3Multipart
     end
 
     def complete(options)
+      options[:content_type] = "application/xml"
+
       url = "/#{options[:object_name]}?uploadId=#{options[:upload_id]}"
 
+      body = format_part_list_in_xml(options)
       headers = { content_type: options[:content_type],
-                  content_length: options[:content_length],
-                  body: format_part_list_in_xml(options) }
+                  content_length: options[:content_length] }
                 
-      headers[:authorization], headers[:date] = sign_request verb: 'POST', url: url, content_type: 'application/xml'
+      headers[:authorization], headers[:date] = sign_request verb: 'POST', url: url, content_type: options[:content_type]
 
-      response = Http.post url, headers
+      response = Http.post url, {headers: headers, body: body}
+      response.body
       parsed_response_body = XmlSimple.xml_in(response.body)  
 
-      return { "location"  => parsed_response["Location"][0] }
+      begin
+        return { "location"  => parsed_response_body["Location"][0] }
+      rescue NoMethodError
+        return { "error" => "Upload does not exist"} if parsed_response_body["Message"].first.match("The specified upload does not exist. The upload ID may be invalid, or the upload may have been aborted or completed.")
+      end
     end
 
     def sign_request(options)
@@ -52,8 +59,9 @@ module S3Multipart
     private
 
     def calculate_authorization_hash(time, options)
-      date = time
-      date = String.new(time).insert(0, "\nx-amz-date:") if from_upload_part?(options)
+      date = String.new(time)
+      date.insert(0, "\nx-amz-date:") if from_upload_part?(options) && options[:parts].nil?
+
       unsigned_request = "#{options[:verb]}\n\n#{options[:content_type]}\n#{date}\n/#{Config.instance.bucket_name}#{options[:url]}" 
       signature = Base64.strict_encode64(OpenSSL::HMAC.digest('sha1', Config.instance.s3_secret_key, unsigned_request))
       
@@ -61,7 +69,7 @@ module S3Multipart
     end
 
     def from_upload_part?(options)
-      options[:content_length] =~ /^[0-9]+$/ ? true : false
+      options[:content_length].to_s.match(/^[0-9]+$/) ? true : false
     end
 
     def format_part_list_in_xml(options)

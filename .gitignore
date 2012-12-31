@@ -1,3 +1,5 @@
 .DS_Store
+
 *.ru
+
 /spec/setup_credentials.rb

@@ -22,7 +22,7 @@ module S3Multipart
 
     def sign_batch
       begin
-        response = S3Multipart::Uploader.sign_batch(params)
+        response = Upload.sign_batch(params)
       rescue
         response = {error: 'There was an error in processing your upload'}
       ensure
@@ -32,7 +32,7 @@ module S3Multipart
 
     def sign_part
       begin
-        response = S3Multipart::Uploader.sign_part(params)
+        response = Upload.sign_part(params)
       rescue
         response = {error: 'There was an error in processing your upload'}
       ensure
@@ -42,7 +42,7 @@ module S3Multipart
 
     def complete_upload
       begin
-        response = S3Multipart::Uploader.complete(params)
+        response = Upload.complete(params)
         
         upload = Upload.find_by_upload_id(params[:upload_id])
         upload.update_attributes(location: response[:location])
