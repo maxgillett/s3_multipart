@@ -3,7 +3,7 @@ module S3Multipart
     def create
       begin
         response = Upload.initiate(params)
-        upload = Upload.create(key: response[:key], upload_id: response[:upload_id], name: response[:name])
+        upload = Upload.create(key: response["key"], upload_id: response["upload_id"], name: response["name"])
         response["id"] = upload["id"]
       rescue
         response = {error: 'There was an error initiating the upload'}

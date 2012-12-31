@@ -5,6 +5,6 @@ module S3Multipart
       attr_accessor :on_complete_callback
     end
 
-    attr_accessor :key, :upload_id, :name, :location
+    attr_accessible :key, :upload_id, :name, :location
   end
 end
