@@ -50,7 +50,7 @@ module S3Multipart
     end
 
     def sign_request(options)
-      options.default = ""
+      #options.default = ""
       time = Time.now.strftime("%a, %d %b %Y %T %Z")
 
       return [calculate_authorization_hash(time, options), time]

@@ -61,15 +61,14 @@
           function beginUpload(pipes, uploadObj) {
             var key = uploadObj.key
               , num_parts = uploadObj.parts.length
-              , ival = i[key];
 
-            if (typeof ival === "undefined") {
-              ival = 0;
+            if (typeof i[key] === "undefined") {
+              i[key] = 0;
             }
 
-            ival++;
+            i[key]++;
 
-            if (ival === num_parts) {
+            if (i[key] === num_parts) {
               for (var j=0; j<pipes; j++) {
                 uploadObj.parts[j].activate();
               }
@@ -165,7 +164,7 @@
           var last_upload_chunk = [];
           var fn = function(key) {
             progress_timer[key] = global.setInterval(function() {
-              var upload, key, size, done, percent, speed;
+              var upload, size, done, percent, speed;
 
               if (typeof last_upload_chunk[key] === "undefined") {
                 last_upload_chunk[key] = 0;
@@ -216,7 +215,7 @@
     // Upload constructor
     function Upload(file, o, key) {
       function Upload() {
-        var upload, key, id, parts, part, segs, chunk_segs, chunk_lens, pipes, blob;
+        var upload, id, parts, part, segs, chunk_segs, chunk_lens, pipes, blob;
         
         upload = this;
         
@@ -278,7 +277,7 @@
                 xhr.open('PUT', 'http://bitcast-bucket.s3.amazonaws.com/'+object_name+'?partNumber='+part.num+'&uploadId='+upload_id, true);
                 xhr.setRequestHeader('x-amz-date', response[key].date);
                 xhr.setRequestHeader('Authorization', response[key].authorization);
-                
+
                 // Notify handler that an xhr request has been opened
                 upload.handler.beginUpload(pipes, upload);
               });
@@ -306,7 +305,7 @@
         upload.handler.onPartSuccess(upload, part);
       };
       xhr.onerror = function() {
-        upload.handler.onError(upload, par);
+        upload.handler.onError(upload, part);
       };
       xhr.upload.onprogress = _.throttle(function(e) {
         upload.inprogress[key] = e.loaded;
@@ -352,7 +351,7 @@
     S3MP.prototype.signPartRequests = function(id, object_name, upload_id, parts, cb) {
       var content_lengths, url, body, request, response;
 
-      content_lengths = _.reduce(parts, function(memo, part) {
+      content_lengths = _.reduce(_.rest(parts), function(memo, part) {
         return memo + "-" + part.size;
       }, parts[0].size);
 
@@ -393,7 +392,7 @@
                               parts          : uploadObj.Etags
                             });
 
-      request = this.createXhrRequest('POST', url, function(xhr) {
+      request = this.createXhrRequest('PUT', url, function(xhr) {
         if (this.readyState !== 4) {
           // Retry this chunk and give an error message
           return false;
