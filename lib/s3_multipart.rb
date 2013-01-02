@@ -25,14 +25,18 @@ module S3Multipart
 
   end
 
-  module ActiveRecord
+  module ActionControllerHelpers
 
-    # Needs to be reworked to allow for different callbacks to be called for several upload forms
+    #
+    # Stores a code block in the Upload class that will be executed (and passed the
+    # completed upload object) when the on_complete method is called on an 
+    # instance of the Upload class
+    #
     def attach_uploader(&block)
-      Upload.class_eval do
+      S3Multipart::Upload.class_eval do
         self.on_complete_callback = block
         def on_complete
-          on_complete_callback.call(self)
+          Upload.on_complete_callback.call(self)
         end
       end
     end
@@ -47,4 +51,5 @@ require 's3_multipart/http/net_http'
 require 's3_multipart/uploader'
 require 's3_multipart/uploader/config'
 
-ActiveRecord::Base.extend S3Multipart::ActiveRecord
+
+ActionController::Base.send(:include, S3Multipart::ActionControllerHelpers)

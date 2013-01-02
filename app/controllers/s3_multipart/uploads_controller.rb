@@ -43,16 +43,14 @@ module S3Multipart
     def complete_upload
       begin
         response = Upload.complete(params)
-        
         upload = Upload.find_by_upload_id(params[:upload_id])
         upload.update_attributes(location: response[:location])
-        upload.run_callback
+        upload.on_complete
       rescue
         response = {error: 'There was an error completing the upload'}
       ensure
         render :json => response
       end
     end
-
   end
 end

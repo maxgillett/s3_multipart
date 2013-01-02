@@ -43,8 +43,6 @@ describe "Uploader module" do
                                      content_type: "application/xml",
                                         upload_id: "a83jrhfs94jcj3c3" ) 
 
-    response["error"].should eql("Upload does not exist")
-
+    response[:error].should eql("Upload does not exist")
   end
-
 end

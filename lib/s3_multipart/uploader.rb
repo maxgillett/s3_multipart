@@ -43,9 +43,9 @@ module S3Multipart
       parsed_response_body = XmlSimple.xml_in(response.body)  
 
       begin
-        return { "location"  => parsed_response_body["Location"][0] }
+        return { location: parsed_response_body["Location"][0] }
       rescue NoMethodError
-        return { "error" => "Upload does not exist"} if parsed_response_body["Message"].first.match("The specified upload does not exist. The upload ID may be invalid, or the upload may have been aborted or completed.")
+        return { error: "Upload does not exist"} if parsed_response_body["Message"].first.match("The specified upload does not exist. The upload ID may be invalid, or the upload may have been aborted or completed.")
       end
     end
 
