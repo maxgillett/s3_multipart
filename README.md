@@ -38,7 +38,7 @@ S3Multipart.configure do |config|
   config.s3_access_key = '#########'
   config.s3_secret_key = '#########'
 end
-```ruby
+```
 
 ## Getting Started
 
