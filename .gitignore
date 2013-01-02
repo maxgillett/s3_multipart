@@ -1,5 +1,6 @@
+/tmp
 .DS_Store
 
-*.ru
-
+# ignore files containing sensitive info
+config.ru
 /spec/setup_credentials.rb

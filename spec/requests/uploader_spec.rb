@@ -39,7 +39,7 @@ describe "Uploader module" do
   it "should unsuccessfully attempt to complete an upload that doesn't exist" do
     response = @uploader.complete(    object_name: "example_object",
                                    content_length: "1000000",
-                                            parts: [{"partNum" => 1, "ETag" => "jf93nda3Sf8FSh"}],
+                                            parts: [{partNum: 1, ETag: "jf93nda3Sf8FSh"}],
                                      content_type: "application/xml",
                                         upload_id: "a83jrhfs94jcj3c3" ) 
 

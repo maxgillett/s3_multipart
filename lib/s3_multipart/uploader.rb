@@ -75,7 +75,7 @@ module S3Multipart
     def format_part_list_in_xml(options)
       hash = Hash["Part", ""];
       hash["Part"] = options[:parts].map do |part| 
-        { "PartNumber" => part["partNum"], "ETag" => part["ETag"] }
+        { "PartNumber" => part[:partNum], "ETag" => part[:ETag] }
       end
       hash["Part"].sort_by! {|obj| obj["PartNumber"]}
 

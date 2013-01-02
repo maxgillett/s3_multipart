@@ -1,0 +1,19 @@
+<div id="content" class="upload">
+  <div class="left-pane">
+    <div class="upload-list">
+      <ul>
+        <li>
+          <span class="name"></span>
+          <span class="size"></span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="upload-wrapper">
+      <%= multipart_uploader_form(types: ['video'], text: 'Select a Video') %>
+    </div>
+    <button class="submit-button">Upload</button>
+
+  </div>
+</div>
+

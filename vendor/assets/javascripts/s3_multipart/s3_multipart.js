@@ -117,7 +117,7 @@
 
           // Increase the uploaded count and delete the finished part 
           uploadObj.uploaded += finished_part.size;
-          uploadObj.inprogress[finished_part.num-1] = 0;
+          uploadObj.inprogress[finished_part.num] = 0;
           i = _.indexOf(parts, finished_part);
           parts.splice(i,1);
 

@@ -7,12 +7,19 @@ group :development do
   gem 'sqlite3'
   gem 'actionpack' # action_controller, action_view
   gem 'sprockets'
-  gem 'combustion', '~> 0.3.3'
   gem "rails"
   gem "sqlite3"
+  
+  # tests
+  gem 'combustion', '~> 0.3.3'
   gem 'rspec'
   gem 'rspec-rails'
   gem 'capybara'
+
+  # assets
+  gem 'sass-rails',   '~> 3.2.3'
+  gem 'coffee-rails', '~> 3.2.1'
+  gem 'compass-rails'
 
   gemspec
 
