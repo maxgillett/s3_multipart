@@ -90,7 +90,7 @@ The `multipart_uploader_form` function is a view helper, and generates the neces
 <%= multipart_uploader_form(types: ['video/mpeg'],
                             input_name: 'uploader',
                             button_class: 'submit-button',
-                            button_text: 'Upload selected videos'),
+                            button_text: 'Upload selected videos',
                             html: %Q{<button class="upload-button">Select a Video</button>}) %>
 ```
 
