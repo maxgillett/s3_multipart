@@ -2,9 +2,10 @@ module S3Multipart
   module ActionViewHelpers
     module FormHelper
       def multipart_uploader_form(options = {})
-        html = file_field_tag 'uploader', :accept => options[:types].join(',')
-        html << button_tag(:type => 'submit', :class => 'upload-button') do
-          content_tag(:strong, options[:text])
+        html = file_field_tag options[:input_name], :accept => options[:types].join(',')
+        html << options[:html].html_safe
+        html << button_tag(:class => options[:button_class]) do
+          content_tag(:span, options[:button_text])
         end
       end
     end

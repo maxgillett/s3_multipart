@@ -17,6 +17,7 @@
 $(function() {
     $(".submit-button").click(function() {
       window.SS3MP = new window.S3MP({
+        bucket: 'bitcast-bucket',
         fileSelector: "#uploader",
         onComplete: function(num) {
           console.log("File "+num+" successfully uploaded")
@@ -38,53 +39,53 @@ $(function() {
     });
 
 
-    (function() {
-      var uploader, adjust_uploader_position, reset_uploader_position
+    // (function() {
+    //   var uploader, adjust_uploader_position, reset_uploader_position
 
-      uploader = document.getElementById("uploader");
+    //   uploader = document.getElementById("uploader");
 
-      // Callback functions
-      mousemove_fn = _.throttle(function(e) {
-        uploader.style.left = e.pageX-280 +"px";
-        uploader.style.top = "0px";
-      },10);
-      mouseover_fn = function() {
-        $(".upload-button").addClass("active");
-      };
-      mouseleave_fn = function() {
-        $(".upload-button").removeClass("active");
-      }
-      change_fn = function() {
-        var upload_list, clone, size;
+    //   // Callback functions
+    //   mousemove_fn = _.throttle(function(e) {
+    //     uploader.style.left = e.pageX-280 +"px";
+    //     uploader.style.top = "0px";
+    //   },10);
+    //   mouseover_fn = function() {
+    //     $(".upload-button").addClass("active");
+    //   };
+    //   mouseleave_fn = function() {
+    //     $(".upload-button").removeClass("active");
+    //   }
+    //   change_fn = function() {
+    //     var upload_list, clone, size;
 
-        $(".upload-wrapper").hide();
-        $(".submit-button").show();
+    //     $(".upload-wrapper").hide();
+    //     $(".submit-button").show();
 
-        upload_list = $(".upload-list")
-        upload_list.show();
+    //     upload_list = $(".upload-list")
+    //     upload_list.show();
 
-        _.each($("#uploader").get(0).files, function(val, key, list) {
-          size = (val.size/1000000).toFixed(2);
+    //     _.each($("#uploader").get(0).files, function(val, key, list) {
+    //       size = (val.size/1000000).toFixed(2);
 
-          if (upload_list.find("li").length === 1) {
-            clone = upload_list.find("li");         
-          } else {
-            clone = upload_list.find("li:first").clone()          
-          }
+    //       if (upload_list.find("li").length === 1) {
+    //         clone = upload_list.find("li");         
+    //       } else {
+    //         clone = upload_list.find("li:first").clone()          
+    //       }
 
-          clone.find(".name").text(val.name)
-          clone.find(".size").text(size + " mb")
+    //       clone.find(".name").text(val.name)
+    //       clone.find(".size").text(size + " mb")
 
-          upload_list.find("ul").append(clone)
-        });
-      }
+    //       upload_list.find("ul").append(clone)
+    //     });
+    //   }
 
-      $(".upload-wrapper")
-        .mouseover(mouseover_fn)
-        .mouseleave(mouseleave_fn)
-        .mousemove(mousemove_fn)
-        .live('change',change_fn);
+    //   $(".upload-wrapper")
+    //     .mouseover(mouseover_fn)
+    //     .mouseleave(mouseleave_fn)
+    //     .mousemove(mousemove_fn)
+    //     .live('change',change_fn);
 
-    })();
+    // })();
 
   });

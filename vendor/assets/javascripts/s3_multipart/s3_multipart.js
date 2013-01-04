@@ -22,6 +22,7 @@
       // User defined options + callbacks
       options = options || {
         fileSelector: null,
+        bucket: null,
         onComplete: function(num) {
           console.log("File "+num+" successfully uploaded")
         },
@@ -274,7 +275,7 @@
               _.each(parts, function(part, key) {
                 var xhr = part.xhr;
 
-                xhr.open('PUT', 'http://bitcast-bucket.s3.amazonaws.com/'+object_name+'?partNumber='+part.num+'&uploadId='+upload_id, true);
+                xhr.open('PUT', 'http://'+upload.bucket+'.s3.amazonaws.com/'+object_name+'?partNumber='+part.num+'&uploadId='+upload_id, true);
                 xhr.setRequestHeader('x-amz-date', response[key].date);
                 xhr.setRequestHeader('Authorization', response[key].authorization);
 

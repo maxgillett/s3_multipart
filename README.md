@@ -24,11 +24,41 @@ Add the following to your routes file:
 mount S3Multipart::Engine => "/s3_multipart"
 ```
 
-And if you are using sprockets, add the following to your application.js file
+If you are using sprockets, add the following to your application.js file. Make sure that the underscore and jquery libraries have been required before this line.
 
 ```ruby
 //= require s3_multipart/s3_multipart
 ```
+
+Also in your application.js file you will need to include the following:
+
+```javascript
+$(function() {
+  $(".submit-button").click(function() { // The button class passed into multipart_uploader_form (see "Getting Started")
+    new window.S3MP({
+      bucket: "YOUR_S3_BUCKET"
+      fileSelector: "#uploader", // The input name passed into multipart_uploader_form (see "Getting Started")
+      onComplete: function(num) {
+        console.log("File "+num+" successfully uploaded")
+      },
+      onPause: function(num) {
+        console.log("File "+num+" has been paused")
+      },
+      onCancel: function(num) {
+        console.log("File upload "+num+" was canceled")
+      },
+      onError: function(err) {
+        console.log("There was an error")
+      },
+      onProgress: function(num, size, done, percent, speed) {
+        console.log("File %d is %f percent done (%f of %f total) and uploading at %s", num, percent, done, size, speed);
+      }
+    });
+  });
+});
+```
+
+This piece of code does some configuration and provides various callbacks that you can hook into.
 
 Finally, create an initializer in config/initializers with the following, adding in your credentials.
 
@@ -54,17 +84,23 @@ def your_controller_method
 end
 ```
 
-The `multipart_uploader_form` function is a view helper, and generates the necessary input elements.
+The `multipart_uploader_form` function is a view helper, and generates the necessary input elements. It takes in a hash of allowed MIME types and a string of html to be interpolated between the generated file input element and submit button. 
 
 ```ruby
-<%= multipart_uploader_form(types: ['video/mpeg'], text: 'Select a Video') %>
+<%= multipart_uploader_form(types: ['video/mpeg'],
+                            input_name: 'uploader',
+                            button_class: 'submit-button',
+                            button_text: 'Upload selected videos'),
+                            html: %Q{<button class="upload-button">Select a Video</button>}) %>
 ```
 
 puts out this:
 
 ```html
 <input accept="video/mpeg" id="uploader" name="uploader" type="file">
-<button class="upload-button" type="submit"><strong>Select a Video</strong></button>
+<button class="submit-button">Upload selected videos</button>
 ```
 
 ## Contributing
+
+S3_Multipart is very much a work in progress. If you squash a bug, make enhancemenets, or write more tests, please submit a pull request. 

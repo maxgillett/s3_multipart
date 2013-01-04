@@ -10,10 +10,12 @@
     </div>
 
     <div class="upload-wrapper">
-      <%= multipart_uploader_form(types: ['video'], text: 'Select a Video') %>
+      <%= multipart_uploader_form(types: ['video'], 
+                                  input_name: 'uploader', 
+                                  button_class: 'submit-button', 
+                                  button_text: 'Upload selected videos', 
+                                  html: %Q{<button class="upload-button" type="submit"><strong>Select a Video</strong></button>}) %>
     </div>
-    <button class="submit-button">Upload</button>
-
   </div>
 </div>
 
