@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    s3_multipart (0.0.1)
-      uuid
-      xml-simple
+    s3_multipart (0.0.2)
+      uuid (>= 2.3.6)
+      xml-simple (>= 1.1.2)
 
 GEM
   remote: https://rubygems.org/

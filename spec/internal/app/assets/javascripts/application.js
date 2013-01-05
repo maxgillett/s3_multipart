@@ -19,6 +19,9 @@ $(function() {
       window.SS3MP = new window.S3MP({
         bucket: 'bitcast-bucket',
         fileSelector: "#uploader",
+        onStart: function(num) {
+          console.log("File "+num+" has started uploading")
+        },
         onComplete: function(num) {
           console.log("File "+num+" successfully uploaded")
         },

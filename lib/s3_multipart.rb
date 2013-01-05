@@ -15,6 +15,7 @@ module S3Multipart
     #   config.s3_secret_key = ''
     #   config.bucket_name   = ''
     # end
+
     def configure(&block)
       S3Multipart::Uploader::Config.configure(block)
     end
@@ -27,18 +28,28 @@ module S3Multipart
 
   module ActionControllerHelpers
 
-    #
-    # Stores a code block in the Upload class that will be executed (and passed the
-    # completed upload object) when the on_complete method is called on an 
-    # instance of the Upload class
-    #
-    def attach_uploader(&block)
-      S3Multipart::Upload.class_eval do
-        self.on_complete_callback = block
-        def on_complete
-          Upload.on_complete_callback.call(self)
+    module AttachUploader
+      def self.on_begin(&block)
+        S3Multipart::Upload.class_eval do
+          self.on_begin_callback = block
+          def on_begin
+            Upload.on_begin_callback.call(self)
+          end
         end
       end
+
+      def self.on_complete(&block)
+        S3Multipart::Upload.class_eval do
+          self.on_complete_callback = block
+          def on_complete
+            Upload.on_complete_callback.call(self)
+          end
+        end
+      end 
+    end
+
+    def attach_uploader
+      return AttachUploader
     end
 
   end

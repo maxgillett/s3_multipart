@@ -8,12 +8,12 @@ Gem::Specification.new do |s|
   s.version     = S3Multipart::VERSION
   s.authors     = ["Max Gillett"]
   s.email       = ["max.gillett@gmail.com"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/maxgillett/s3_multipart"
   s.summary     = %q{Upload directly to S3 using multipart uploading}
   s.description = %q{See github for installation and configuration }
 
-  s.add_dependency "uuid"
-  s.add_dependency "xml-simple"
+  s.add_dependency "uuid",       ">= 2.3.6"
+  s.add_dependency "xml-simple", ">= 1.1.2"
 
   s.add_development_dependency 'combustion', '~> 0.3.3'
   s.add_development_dependency "rails"

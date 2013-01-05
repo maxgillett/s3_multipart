@@ -23,6 +23,9 @@
       options = options || {
         fileSelector: null,
         bucket: null,
+        onStart: function(num) {
+          console.log("File "+num+" has started uploading")
+        },
         onComplete: function(num) {
           console.log("File "+num+" successfully uploaded")
         },
@@ -74,6 +77,7 @@
                 uploadObj.parts[j].activate();
               }
               S3MP.handler.startProgressTimer(key);
+              S3MP.onStart(key); // This probably needs to go somewhere else. 
             }
           }
           return beginUpload;
@@ -148,10 +152,12 @@
           this.clearProgressTimer(key);
 
           // Tell the server to put together the pieces
-          S3MP.completeMultipart(uploadObj, function() {
+          S3MP.completeMultipart(uploadObj, function(obj) {
             // Notify the client that the upload has succeeded when we
             // get confirmation from the server
-            S3MP.onComplete(key);
+            if (obj.location) {
+              S3MP.onComplete(key);
+            }
           });
 
         },
