@@ -4,3 +4,5 @@
 # ignore files containing sensitive info
 config.ru
 /spec/setup_credentials.rb
+
+*.gem

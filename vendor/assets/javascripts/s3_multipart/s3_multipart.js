@@ -23,11 +23,11 @@
       options = options || {
         fileSelector: null,
         bucket: null,
-        onStart: function(num) {
-          console.log("File "+num+" has started uploading")
+        onStart: function(upload) {
+          console.log("File "+upload.num+" has started uploading")
         },
-        onComplete: function(num) {
-          console.log("File "+num+" successfully uploaded")
+        onComplete: function(upload) {
+          console.log("File "+upload.num+" successfully uploaded")
         },
         onPause: function(num) {
           console.log("File "+num+" has been paused")
@@ -77,7 +77,7 @@
                 uploadObj.parts[j].activate();
               }
               S3MP.handler.startProgressTimer(key);
-              S3MP.onStart(key); // This probably needs to go somewhere else. 
+              S3MP.onStart(uploadObj); // This probably needs to go somewhere else. 
             }
           }
           return beginUpload;
@@ -122,7 +122,7 @@
 
           // Increase the uploaded count and delete the finished part 
           uploadObj.uploaded += finished_part.size;
-          uploadObj.inprogress[finished_part.num] = 0;
+          uploadObj.inprogress[finished_part.num-1] = 0;
           i = _.indexOf(parts, finished_part);
           parts.splice(i,1);
 
@@ -156,7 +156,7 @@
             // Notify the client that the upload has succeeded when we
             // get confirmation from the server
             if (obj.location) {
-              S3MP.onComplete(key);
+              S3MP.onComplete(uploadObj);
             }
           });
 
