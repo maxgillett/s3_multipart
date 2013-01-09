@@ -31,7 +31,7 @@ module S3Multipart
       options[:content_type] = "application/xml"
 
       url = "/#{options[:object_name]}?uploadId=#{options[:upload_id]}"
-
+      
       body = format_part_list_in_xml(options)
       headers = { content_type: options[:content_type],
                   content_length: options[:content_length] }
@@ -39,7 +39,6 @@ module S3Multipart
       headers[:authorization], headers[:date] = sign_request verb: 'POST', url: url, content_type: options[:content_type]
 
       response = Http.post url, {headers: headers, body: body}
-      response.body
       parsed_response_body = XmlSimple.xml_in(response.body)  
 
       begin

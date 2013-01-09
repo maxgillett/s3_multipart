@@ -52,7 +52,7 @@
 
         // utility function to return an upload object given a file
         _returnUploadObj: function(file) {
-          var uploadObj = _.find(S3MP.fileList, function(uploadObj) {
+          var uploadObj = _.find(S3MP.uploadList, function(uploadObj) {
             return uploadObj.file === file;
           });
           return uploadObj;   
