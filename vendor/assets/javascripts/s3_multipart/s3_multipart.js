@@ -19,44 +19,13 @@
         , progress_timer = []
         , S3MP = this;
 
-      // User defined options + callbacks
-      options = options || {
-        fileSelector: null,
-        bucket: null,
-        onStart: function(upload) {
-          console.log("File "+upload.num+" has started uploading")
-        },
-        onComplete: function(upload) {
-          console.log("File "+upload.num+" successfully uploaded")
-        },
-        onPause: function(num) {
-          console.log("File "+num+" has been paused")
-        },
-        onCancel: function(num) {
-          console.log("File upload "+num+" was canceled")
-        },
-        onError: function(num) {
-          console.log("There was an error")
-        },
-        onProgress: function(num, size, done, percent, speed) {
-          console.log("File %d is %f percent done (%f of %f total) and uploading at %s", num, percent, done, size, speed);
-        }
-      }
       _.extend(this, options);
 
       this.uploadList = [];
 
-      // Handles all of the user input, success/failure events, and
+      // Handles all of the success/failure events, and
       // progress notifiers
       this.handler = {
-
-        // utility function to return an upload object given a file
-        _returnUploadObj: function(file) {
-          var uploadObj = _.find(S3MP.uploadList, function(uploadObj) {
-            return uploadObj.file === file;
-          });
-          return uploadObj;   
-        },
 
         // Activate an appropriate number of parts (number = pipes)
         // when all of the parts have been successfully initialized
@@ -83,28 +52,6 @@
           return beginUpload;
         }(),
 
-        // cancel a given file upload
-        cancel: function(file) {
-          var uploadObj, i;
-
-          uploadObj = this._returnUploadObj(file);
-          i = _.indexOf(S3MP.uploadList, uploadObj);
-
-          S3MP.uploadList.splice(i,i+1);
-          S3MP.onCancel();
-        },
-
-        // pause a given file upload
-        pause: function(file) {
-          var uploadObj = this._returnUploadObj(file);
-          
-          _.each(uploadObj.activeParts, function(part, key, list) {
-            part.xhr.abort();
-          });
-
-          S3MP.onPause();
-        },
-
         // called when an upload is paused or the network connection cuts out
         onError: function(uploadObj, part) {
           // To-do
@@ -122,7 +69,7 @@
 
           // Increase the uploaded count and delete the finished part 
           uploadObj.uploaded += finished_part.size;
-          uploadObj.inprogress[finished_part.num-1] = 0;
+          uploadObj.inprogress[finished_part.num] = 0;
           i = _.indexOf(parts, finished_part);
           parts.splice(i,1);
 
@@ -201,7 +148,12 @@
 
       };
 
-      files = $(this.fileSelector).get(0).files;
+      // List of files may come from a FileList object or an array of files
+      if (this.fileSelector) {
+        files = $(this.fileSelector).get(0).files; // FileList object
+      } else {
+        files = this.fileList; // array specified in configuration
+      }
 
       _.each(files, function(file, key) {
         //Do validation for each file before creating a new upload object
@@ -250,7 +202,7 @@
         } else if (this.size > 10000000) { // greater than 10 mb
           num_segs = 2;
           pipes = 2;
-        } else { // Do not use multi-part uploader
+        } else { 
           num_segs = 10;
           pipes = 3;
         }         
@@ -321,8 +273,13 @@
     };
 
     UploadPart.prototype.activate = function() { 
-      this.status = "active";     
       this.xhr.send(this.blob);
+      this.status = "active";
+    };
+
+    UploadPart.prototype.pause = function() {
+      this.xhr.abort();
+      this.status = "paused";
     };
 
     S3MP.prototype.initiateMultipart = function(upload, cb) {
@@ -470,6 +427,51 @@
         throw new Error("File API not supported");
       }
     }();
+
+    // utility function to return an upload object given a file
+    S3MP.prototype._returnUploadObj = function(key) {
+      var uploadObj = _.find(this.uploadList, function(uploadObj) {
+        return uploadObj.key === key;
+      });
+      return uploadObj;   
+    };
+
+    // cancel a given file upload
+    S3MP.prototype.cancel = function(key) {
+      var uploadObj, i;
+
+      uploadObj = this._returnUploadObj(key);
+      i = _.indexOf(this.uploadList, uploadObj);
+
+      this.uploadList.splice(i,i+1);
+      this.onCancel();
+    };
+
+    // pause a given file upload
+    S3MP.prototype.pause = function(key) {
+      var uploadObj = this._returnUploadObj(key);
+      
+      _.each(uploadObj.parts, function(part, key, list) {
+        if (part.status == "active") {
+          part.pause();
+        }
+      });
+
+      this.onPause();
+    };
+
+    // resume a given file upload
+    S3MP.prototype.resume = function(key) {
+      var uploadObj = this._returnUploadObj(key);
+      
+      _.each(uploadObj.parts, function(part, key, list) {
+        if (part.status == "paused") {
+          part.activate();
+        }
+      });
+
+      this.onResume();          
+    };
     
     return S3MP;
 
