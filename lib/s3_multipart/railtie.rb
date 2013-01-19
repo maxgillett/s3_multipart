@@ -8,6 +8,13 @@ if defined?(Rails)
         end
       end
 
+      # Load all of the upload controllers in app/uploaders/multipart
+      initializer "s3_multipart.load_upload_controllers" do
+        Dir[Rails.root.join('app', 'uploaders', 'multipart').to_s].each do |uploader|
+          require uploader
+        end
+      end
+
     end
   end
 end

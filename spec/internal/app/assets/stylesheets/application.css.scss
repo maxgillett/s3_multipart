@@ -289,7 +289,10 @@ body  {
     }
 
     .ui-progressbar {
-      height: 25px;
+      @include border-radius(4px);
+      //@include background-clip(border-box);
+      overflow: hidden;
+      height: 5px;
       border: 1px solid darken(white, 30);
       margin: 15px 0 2px 0;
     }
@@ -304,9 +307,15 @@ body  {
     .progress-bar-info {
       margin-bottom: 15px;
       font: {
-        family: Arial;
-        size: 12px;
+        family: "Lato", sans-serif;
+        size: 11px;
+        //weight: bold;
       }
+
+      .speed {
+        float: right;
+      }
+
     }
 
 

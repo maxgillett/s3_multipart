@@ -15,6 +15,16 @@
 //= require jquery.ui.progressbar
 //= require s3_multipart/s3_multipart
 
+// For testing progress bar style
+// $(function() {
+//   $(".upload-wrapper, .upload-list").hide();
+//   $(".upload-list").after('<div class="progress-bar-'+1+'"></div>')
+//   $(".progress-bar-"+1).progressbar({ max: 100 })
+//     .after('<div class="progress-bar-info progress-bar-info-'+1+'"><span class="name">slug.wmv</span><span class="speed">27% (3.2 MB of 11.1 MB) at 290 kbps</span></div>');
+//   $('.progress-bar-'+1).progressbar({ value: 20 })
+// });    
+
+
 $(function() {
   var file_list, s3mp;
 
@@ -45,12 +55,15 @@ $(function() {
         $(".upload-wrapper, .upload-list").hide();
         $(".upload-list").after('<div class="progress-bar-'+key+'"></div>')
         $(".progress-bar-"+key).progressbar({ max: 100 })
-          .after('<div class="progress-bar-info progress-bar-info-'+key+'"><span class="name"></span><span class="speed"></span></div>');
+          .after('<div class="progress-bar-info progress-bar-info-'+key+'"><span class="name">'+upload.name+'</span><span class="speed"></span></div>');
         
         console.log("File "+key+" has started uploading")
       },
       onComplete: function(upload) {
         alert("File "+upload.key+" successfully uploaded");
+        $('.progress-bar-info-'+key)
+          .find(".speed").html("100% ("+(size/1000000).toFixed(1)+" MB of "+(size/1000000).toFixed(1)+" MB)");
+
         console.log("File "+upload.key+" successfully uploaded")
       },
       onPause: function(key) {
@@ -68,7 +81,7 @@ $(function() {
       onProgress: function(key, size, done, percent, speed) {
         $('.progress-bar-'+key).progressbar({ value: percent })
         $('.progress-bar-info-'+key)
-          .find(".speed").html("Speed: "+speed/1000+" kbps");
+          .find(".speed").html(percent.toFixed(1)+"% ("+(done/1000000).toFixed(1)+" MB of "+(size/1000000).toFixed(1)+" MB) at "+(speed/1000).toFixed(0)+" kbps");
         console.log("File %d is %f percent done (%f of %f total) and uploading at %s", key, percent, done, size, speed);
       }
     });
