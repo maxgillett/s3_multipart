@@ -1,4 +1,5 @@
-class <%= Class %>Uploader < S3Multipart::Uploader::Core
+class <%= Class %>Uploader < ApplicationController
+  extend S3Multipart::Uploader::Core
 
   # Attaches the specified model to the uploader, creating a "has_one" 
   # relationship between the internal upload model and the given model.
@@ -17,7 +18,7 @@ class <%= Class %>Uploader < S3Multipart::Uploader::Core
   #              upload object passed into the on_complete callback
   #
   on_begin do |upload|
-    # Code to be evaluated when upload begins
+    # Code to be evaluated when upload begins.
   end
 
   # See above comment. Called when the upload has successfully completed

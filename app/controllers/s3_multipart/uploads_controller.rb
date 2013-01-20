@@ -3,9 +3,8 @@ module S3Multipart
     def create
       begin
         response = Upload.initiate(params)
-        upload = Upload.create(key: response["key"], upload_id: response["upload_id"], name: response["name"])
+        upload = Upload.create(key: response["key"], upload_id: response["upload_id"], name: response["name"], uploader: params["uploader"])
         response["id"] = upload["id"]
-        # upload.on_begin if upload.respond_to?(:on_begin)
         upload.execute_callback(:begin)
       rescue
         response = {error: 'There was an error initiating the upload'}
@@ -47,7 +46,7 @@ module S3Multipart
           response = Upload.complete(params)
           upload = Upload.find_by_upload_id(params[:upload_id])
           upload.update_attributes(location: response[:location])
-          upload.on_complete if upload.respond_to?(:on_complete)
+          upload.execute_callback(:complete)
         rescue
           response = {error: 'There was an error completing the upload'}
         ensure

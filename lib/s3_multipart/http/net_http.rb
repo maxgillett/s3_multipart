@@ -37,13 +37,13 @@ module S3Multipart
 
     private
 
-    def http 
-      Net::HTTP.new('bitcast-bucket.s3.amazonaws.com', 80)
-    end
+      def http 
+        Net::HTTP.new("#{Config.instance.bucket_name}.s3.amazonaws.com", 80)
+      end
 
-    def request_class
-      Net::HTTP.const_get(method.to_s.capitalize)
-    end
+      def request_class
+        Net::HTTP.const_get(method.to_s.capitalize)
+      end
 
   end
 end

@@ -1,6 +1,6 @@
 require "s3_multipart/uploader/callbacks"
 require "s3_multipart/uploader/validations"
-require 'uuid'
+require "digest/sha1"
 
 module S3Multipart
   module Uploader
@@ -11,15 +11,23 @@ module S3Multipart
 
     self.controllers = {}
 
+    def self.serialize(controller)
+      controllers[controller.to_s.to_sym]
+    end
+
+    def self.deserialize(digest)
+      controllers.key(digest).constantize
+    end
+
     # Generated multipart upload controllers (which reside in the app/uploaders/multipart
-    # directory in the Rails application) inherit from this class.
-    class Core
+    # directory in the Rails application) extend this module.
+    module Core
 
       include S3Multipart::Uploader::Callbacks
       include S3Multipart::Uploader::Validations
 
-      def self.inherited(subclass)
-        Uploader.controllers[subclass] = UUID.generate
+      def self.included(klass)
+        Uploader.controllers[klass.to_s.to_sym] = Digest::SHA1.hexdigest(klass)
       end
 
       def attach(model)

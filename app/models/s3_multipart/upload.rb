@@ -1,15 +1,18 @@
 module S3Multipart
   class Upload < ::ActiveRecord::Base
-    class << self   
-      include S3Multipart::TransferHelpers
-      # attr_accessor :on_complete_callback
-      # attr_accessor :on_begin_callback
-    end
+    extend S3Multipart::TransferHelpers
 
     attr_accessible :key, :upload_id, :name, :location, :uploader
 
     def execute_callback(stage)
-
+      uploader = S3Multipart::Uploader.deserialize(uploader)
+      
+      case state
+      when :begin
+        uploader.on_begin_callback.call(self)
+      when :complete
+        uploader.on_complete_callback.call(self)
+      end
     end
 
   end

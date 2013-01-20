@@ -9,7 +9,7 @@ module S3Multipart
   class << self
 
     def configure(&block)
-      S3Multipart::Uploader::Config.configure(block)
+      S3Multipart::Config.configure(block)
     end
 
     def remove_unfinished_uploads(seconds=60*60*24*10)
@@ -48,11 +48,11 @@ module S3Multipart
 
 end
 
+require 's3_multipart/config'
 require 's3_multipart/railtie'
 require 's3_multipart/engine'
 require 's3_multipart/http/net_http'
 require 's3_multipart/uploader'
-require 's3_multipart/uploader/config'
 require 's3_multipart/transfer_helpers'
 
 # ActionController::Base.send(:include, S3Multipart::ActionControllerHelpers)
