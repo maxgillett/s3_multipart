@@ -6,7 +6,7 @@ class CreateS3MultipartUploads < ActiveRecord::Migration
       t.string :upload_id
       t.string :key
       t.string :name
-      t.string :controller
+      t.string :uploader
 
       t.timestamps
     end

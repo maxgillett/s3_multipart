@@ -1,4 +1,8 @@
+require 'rails/generators'
+
 class MultipartUploaderGenerator < Rails::Generators:Base
+  desc "Generates all the necessary setup for integration with the S3 Multipart gem"
+
   source_root File.expand_path("../templates", __FILE__)
   argument :model, :type => :string
   class_option :configuration, :type => :boolean, :default => true, :description => "Create configuration files"
