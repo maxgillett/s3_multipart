@@ -1,9 +1,9 @@
-class <%= Class %>Uploader < ApplicationController
+class <%= class_name %>Uploader < ApplicationController
   extend S3Multipart::Uploader::Core
 
   # Attaches the specified model to the uploader, creating a "has_one" 
   # relationship between the internal upload model and the given model.
-  attach :model
+  attach <%= model %>
 
   # Takes in a block that will be evaluated when the upload has been 
   # successfully initiated. The block will be passed an instance of 
