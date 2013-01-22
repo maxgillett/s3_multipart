@@ -22,7 +22,8 @@
 
     <div class="upload-wrapper">
       <%= multipart_uploader_form(types: ['video'], 
-                                  input_name: 'uploader', 
+                                  input_name: 'uploader',
+                                  uploader: 'VideoUploader',
                                   button_class: 'submit-button', 
                                   button_text: 'Upload selected videos', 
                                   html: %Q{<button class="upload-button" type="submit">Select a Video</button>}) %>

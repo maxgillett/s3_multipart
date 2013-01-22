@@ -287,7 +287,8 @@
 
       url = '/s3_multipart/uploads';
       body = JSON.stringify({ object_name  : upload.name,
-                              content_type : upload.type
+                              content_type : upload.type,
+                              uploader     : $("#uploader").data("uploader")
                             });
 
       request = this.createXhrRequest('POST', url, function(xhr) {

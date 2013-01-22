@@ -1,9 +1,9 @@
-class <%= model_constant %>Uploader < ApplicationController
+class VideoUploader < ApplicationController
   extend S3Multipart::Uploader::Core
 
   # Attaches the specified model to the uploader, creating a "has_one" 
   # relationship between the internal upload model and the given model.
-  attach :<%= model %>
+  attach :video
 
   # Takes in a block that will be evaluated when the upload has been 
   # successfully initiated. The block will be passed an instance of 
@@ -18,7 +18,7 @@ class <%= model_constant %>Uploader < ApplicationController
   #              upload object passed into the on_complete callback
   #
   on_begin do |upload|
-    # Code to be evaluated when upload begins.
+    upload.update_attributes(location: "Unknown")
   end
 
   # See above comment. Called when the upload has successfully completed

@@ -1,5 +1,6 @@
 require "s3_multipart/uploader/callbacks"
 require "s3_multipart/uploader/validations"
+require 'active_support/core_ext/string'
 require "digest/sha1"
 
 module S3Multipart
@@ -15,8 +16,9 @@ module S3Multipart
       controllers[controller.to_s.to_sym]
     end
 
+    # What is wrong with this method?
     def self.deserialize(digest)
-      controllers.key(digest).constantize
+      controllers.key(digest).to_s.constantize
     end
 
     # Generated multipart upload controllers (which reside in the app/uploaders/multipart
@@ -26,8 +28,8 @@ module S3Multipart
       include S3Multipart::Uploader::Callbacks
       include S3Multipart::Uploader::Validations
 
-      def self.included(klass)
-        Uploader.controllers[klass.to_s.to_sym] = Digest::SHA1.hexdigest(klass)
+      def self.extended(klass)
+        Uploader.controllers[klass.to_s.to_sym] = Digest::SHA1.hexdigest(klass.to_s)
       end
 
       def attach(model)

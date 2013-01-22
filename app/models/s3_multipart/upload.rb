@@ -5,13 +5,13 @@ module S3Multipart
     attr_accessible :key, :upload_id, :name, :location, :uploader
 
     def execute_callback(stage)
-      uploader = S3Multipart::Uploader.deserialize(uploader)
+      controller = S3Multipart::Uploader.deserialize(uploader)
       
-      case state
+      case stage
       when :begin
-        uploader.on_begin_callback.call(self)
+        controller.on_begin_callback.call(self)
       when :complete
-        uploader.on_complete_callback.call(self)
+        controller.on_complete_callback.call(self)
       end
     end
 
