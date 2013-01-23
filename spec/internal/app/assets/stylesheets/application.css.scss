@@ -1,0 +1,384 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *=require font-awesome
+ *
+ */
+
+
+
+@import "blueprint/reset";
+@import "compass";
+
+
+@mixin clearfix {
+  // source http://www.alistapart.com/articles/getting-started-with-sass/
+  // For modern browsers
+  &:before,
+  &:after {
+    content:" ";
+    display:table;
+  }
+
+  &:after {
+    clear:both;
+  }
+
+  // For IE 6/7 (trigger hasLayout)
+  & {
+    *zoom:1;
+  }
+}
+
+body  {
+  background: lighten(black, 80);
+}
+
+
+#content.upload {
+  @include border-radius(3px);
+  @include clearfix;
+  background: #fefefe;
+  border: 1px solid #cccccc;
+  min-height: 500px;
+  margin: 0px auto;
+  margin-top: 15px;
+  width: 960px;
+  padding-bottom: 15px;
+  margin-bottom: 25px;
+
+  $left-pane-width: 720px;
+  $padding: 15px;
+  .left-pane {
+    margin-top: $padding;
+    border-right: 1px solid lighten(black, 75);
+    position: relative;
+    float: left;
+    min-height: 350px;
+    width: $left-pane-width;
+    padding: 0 $padding;
+
+    .title {
+      font: {
+        family: Arial;
+        size: 28px;
+        weight: bold;
+      }
+
+      .icon-cloud-upload {
+        position: relative;
+        top: 1px;
+        margin-right: 8px;
+      }
+    }
+
+    .flash {
+      @include border-radius(2px);
+      background: lighten(#f7e6aa, 15);
+      border: 1px solid darken(#f7e6aa, 5);
+      margin-top: 15px;
+      margin-bottom: 15px;
+      padding: 10px;
+      font: {
+        family: Arial;
+        size: 12px;
+      }
+      color: lighten(black, 35);      
+      height: 100px;
+    }
+
+    .upload-list {
+      cursor: default;
+      display: none;
+
+      header {
+        padding: 4px 8px;
+        background: lighten(black, 60);
+        font: {
+          family: "Lato", sans-serif;
+          size: 12px;
+          //weight: bold;
+        }
+        letter-spacing: 1px;
+        color: darken(white, 5);
+      }
+
+      ul {
+        border-top: 2px solid lighten(black, 50);
+        border-bottom: 4px solid lighten(black, 70);
+        list-style: none;
+
+        li {
+          background: lighten(black, 90);
+          border-bottom: 1px solid lighten(black, 50);
+          color: lighten(black, 30);
+          //height: 28px;
+          font: {
+            family: "Lato", sans-serif;
+            size: 12px;
+            weight: bold;
+          }
+          padding: 6px;
+
+          &.select-another-video {
+            cursor: pointer;
+            border-bottom: none;
+            background: lighten(black, 85);;
+            font-weight: normal;
+
+            .icon-plus {
+              position: relative;
+              left: 1px;
+              margin-right: 5px;
+            }
+
+          }
+
+          .name {
+            display: inline-block;
+            margin-left: 3px;
+            vertical-align: top;
+
+            // &:before {
+            //   content: '';
+            //   vertical-align: bottom;
+            //   display: inline-block;
+            //   margin-right: 10px;
+            //   width: 15px;
+            //   height: 15px;
+            //   border: 1px solid black;
+            // }
+
+          }
+
+          .size {
+            float: right;
+            font-weight: normal;
+          }
+
+          .delete {
+            cursor: pointer;
+            position: relative;
+            top: 1px;
+            float: right;
+            text-decoration: none;
+            margin-left: 4px;
+            color: #963518;
+          }
+
+        }
+
+      }
+
+    }
+
+
+    @mixin button {
+      @include border-radius(2px); 
+      cursor: pointer;
+      font: {
+        family: Arial;
+        size: 13px;
+        weight: bold;
+      }
+      color: white;
+      width: 200px;
+      height: 30px;
+      border: 1px solid lighten(black, 50);
+      border-top: 1px solid lighten(#008444, 5);
+    }
+
+    .upload-wrapper {
+      overflow: hidden;
+      position: relative;
+      display: inline-block;
+      margin-top: 15px;
+    
+      #uploader {
+        @include transparent;
+        cursor: pointer;
+        position: absolute;
+        width: 200px;
+        height: 30px;
+      }
+
+      .upload-button {
+        @include button;
+        @include background-image(linear-gradient(lighten(#00ae42, 3), #009a3d 80%, lighten(#008444, 2)));
+        @include box-shadow(0 1px lighten(#008444, 15) inset);
+        @include text-shadow( 0 -1px #00692C); 
+      }
+
+      .active {
+        @include background-image(linear-gradient(lighten(darken(#00ae42, 9), 3), darken(#009a3d, 8) 80%, darken(#008444, 1))); 
+        @include box-shadow(0 1px lighten(#008444, 5) inset);      
+     
+      };
+
+
+      .submit-button {
+        @include button;
+        display: none;
+        position: relative;
+        @include background-image(linear-gradient(lighten(#00ae42, 3), #009a3d 80%, lighten(#008444, 2)));
+        @include box-shadow(0 1px lighten(#008444, 15) inset);
+        @include text-shadow( 0 -1px #00692C); 
+
+
+        &:hover {
+          @include background-image(linear-gradient(lighten(darken(#00ae42, 9), 3), darken(#009a3d, 8) 80%, darken(#008444, 1))); 
+          @include box-shadow(0 1px lighten(#008444, 5) inset);      
+        }
+
+      }
+
+    }
+
+    .upload-form {
+      position: relative;
+
+      form {
+
+        #video_description {
+          height: 80px;
+        }
+
+        span {
+          color: lighten(black, 40);
+          margin: 10px 0 3px 0;
+          display: block;
+          font: {
+            family: Arial;
+            size: 14px;
+            weight: bold;
+          }
+          &:first-of-type {
+            margin-top: 0px;
+          }
+        }
+
+        input, textarea {
+          outline: none;
+          border: 2px solid lighten(black, 80);
+
+          &:focus {
+            border: 2px solid lighten(black, 60);
+          };
+        }
+
+        textarea {
+          width: 520px;
+        }
+
+        input[type="text"] {
+          width: 520px;
+        } 
+
+        input[type="submit"] {
+          margin-top: 10px;
+        }
+
+      }
+    }
+
+    .ui-progressbar {
+      @include border-radius(4px);
+      //@include background-clip(border-box);
+      overflow: hidden;
+      height: 5px;
+      border: 1px solid darken(white, 30);
+      margin: 15px 0 2px 0;
+    }
+
+    .ui-progressbar-value {
+      border: none;
+      margin: 0;
+      background: #29ad3f;
+      height: 100%;
+    }
+
+    .progress-bar-info {
+      margin-bottom: 15px;
+      font: {
+        family: "Lato", sans-serif;
+        size: 11px;
+        //weight: bold;
+      }
+
+      .speed {
+        float: right;
+      }
+
+    }
+
+
+  }
+
+
+  @mixin info-box {
+    @include border-radius(2px);
+    float: left;
+    margin-top: $padding;
+    margin-left: $padding;
+    width: (960px - $left-pane-width - ($padding * 2)) - 40; // -1 for the border
+    //min-height: 300px;
+    border: 5px solid lighten(black, 90);
+
+    header {
+      padding: 1px 0 4px 5px;
+      font: {
+        family: Arial;
+        size: 13px;
+        weight: bold;
+      }
+      color: lighten(black, 35);
+      background: darken(white, 10);;
+    }
+
+    ul {
+      padding: 5px 10px 15px 23px;
+      font: {
+        family: Arial;
+        size: 11px;
+      }
+      color: lighten(black, 35);
+
+      li {
+        margin-top: 8px;
+      }
+
+      li.tip {        
+        font-weight: bold;
+      }
+
+      .info {
+        margin-top: 4px;
+      }
+
+    }
+
+  }
+
+  .info-box-1 {
+    @include info-box;
+    background: darken(white, 3);
+  }
+
+  .info-box-2 {
+    @include info-box;
+    background: darken(white, 3);
+
+    .icon-info-sign {
+      margin-right: 5px;
+    }
+  }
+
+
+}

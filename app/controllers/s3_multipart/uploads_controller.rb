@@ -3,9 +3,9 @@ module S3Multipart
     def create
       begin
         response = Upload.initiate(params)
-        upload = Upload.create(key: response["key"], upload_id: response["upload_id"], name: response["name"])
+        upload = Upload.create(key: response["key"], upload_id: response["upload_id"], name: response["name"], uploader: params["uploader"])
         response["id"] = upload["id"]
-        upload.on_begin if upload.respond_to?(:on_begin)
+        upload.execute_callback(:begin)
       rescue
         response = {error: 'There was an error initiating the upload'}
       ensure
@@ -21,37 +21,38 @@ module S3Multipart
 
     private 
 
-    def sign_batch
-      begin
-        response = Upload.sign_batch(params)
-      rescue
-        response = {error: 'There was an error in processing your upload'}
-      ensure
-        render :json => response
+      def sign_batch
+        begin
+          response = Upload.sign_batch(params)
+        rescue
+          response = {error: 'There was an error in processing your upload'}
+        ensure
+          render :json => response
+        end
       end
-    end
 
-    def sign_part
-      begin
-        response = Upload.sign_part(params)
-      rescue
-        response = {error: 'There was an error in processing your upload'}
-      ensure
-        render :json => response
+      def sign_part
+        begin
+          response = Upload.sign_part(params)
+        rescue
+          response = {error: 'There was an error in processing your upload'}
+        ensure
+          render :json => response
+        end
       end
-    end
 
-    def complete_upload
-      begin
-        response = Upload.complete(params)
-        upload = Upload.find_by_upload_id(params[:upload_id])
-        upload.update_attributes(location: response[:location])
-        upload.on_complete if upload.respond_to?(:on_complete)
-      rescue
-        response = {error: 'There was an error completing the upload'}
-      ensure
-        render :json => response
+      def complete_upload
+        begin
+          response = Upload.complete(params)
+          upload = Upload.find_by_upload_id(params[:upload_id])
+          upload.update_attributes(location: response[:location])
+          upload.execute_callback(:complete)
+        rescue
+          response = {error: 'There was an error completing the upload'}
+        ensure
+          render :json => response
+        end
       end
-    end
+
   end
 end

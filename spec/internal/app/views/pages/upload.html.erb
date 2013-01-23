@@ -1,21 +1,55 @@
 <div id="content" class="upload">
   <div class="left-pane">
+    <div class="title"><i class="icon-cloud-upload"></i>Upload a Screencast</div>
+    <div class="flash">Lorem ipsum dolor sit amet ipsum dolor sit amet  ipsum dolor sit amet  ipsum dolor sit amet  ipsum dolor sit amet  ipsum dolor sit amet  ipsum dolor sit amet  ipsum dolor sit amet  ipsum dolor sit amet </div>
     <div class="upload-list">
+      <header>
+        <span class="total">1 file</span>
+      </header>
       <ul>
         <li>
-          <span class="name"></span>
-          <span class="size"></span>
+          <i class="icon-file icon-large"></i>
+          <span class="name">my-first-video.mp4</span>
+          <i class="icon-remove delete"></i>
+          <span class="size">340 MB</span>
+        </li>
+        <li class="select-another-video">
+          <i class="icon-plus"></i>
+          <span>Select another video</span>
         </li>
       </ul>
     </div>
 
     <div class="upload-wrapper">
       <%= multipart_uploader_form(types: ['video'], 
-                                  input_name: 'uploader', 
+                                  input_name: 'uploader',
+                                  uploader: 'VideoUploader',
                                   button_class: 'submit-button', 
                                   button_text: 'Upload selected videos', 
-                                  html: %Q{<button class="upload-button" type="submit"><strong>Select a Video</strong></button>}) %>
+                                  html: %Q{<button class="upload-button" type="submit">Select a Video</button>}) %>
     </div>
+
+    <div class="upload-form"></div>
+
   </div>
+
+  <div class="info-box-2">
+    <header><i class="icon-info-sign"></i>Tips</header>
+    <ul>
+      <li class="tip">Reduce file sizes</li>
+      <div class="info">Read our quick compression guide to learn how to maximize quality and reduce file size</div>
+      <li class="tip">Increase upload speeds</li>
+      <div class="info">Use a newer browser to take advantage of our advanced uploader to increase your upload speeds and pause and resume uploads</div>
+    </ul>
+  </div>
+<!--   <div class="info-box-1">
+    <header>Guidelines</header>
+    <ul>
+      <li>You may only upload content that you yourself have created.</li>
+      <li>Files must be no larger than 2 gigabytes</li>
+      <li>The following codecs are supported:</li>
+      <div class="info">AVI, WMV, MPEG, H.264</div>
+    </ul>
+  </div> -->
 </div>
 
