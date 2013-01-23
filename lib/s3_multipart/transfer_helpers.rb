@@ -5,7 +5,9 @@ module S3Multipart
   module TransferHelpers
 
     def initiate(options)
-      url = "/#{options[:object_name]}?uploads"
+      real_name = options[:object_name]
+      unique_name = UUID.generate + real_name.match(/.[A-Za-z]+$/)[0] # clean this up later
+      url = "/#{unique_name}?uploads"
 
       headers = {content_type: options[:content_type]}
       headers[:authorization], headers[:date] = sign_request verb: 'POST', url: url, content_type: options[:content_type]
@@ -15,7 +17,7 @@ module S3Multipart
 
       return { "key"  => parsed_response_body["Key"][0],
                "upload_id"   => parsed_response_body["UploadId"][0],
-               "name" => options[:object_name] }
+               "name" => real_name }
     end
 
     def sign_batch(options)

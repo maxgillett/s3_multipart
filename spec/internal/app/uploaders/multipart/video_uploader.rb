@@ -18,6 +18,8 @@ class VideoUploader < ApplicationController
   #              upload object passed into the on_complete callback
   #
   on_begin do |upload|
+    video = Video.create(name: "test")
+    upload.video = video
     upload.update_attributes(location: "Unknown")
   end
 

@@ -21,7 +21,7 @@ $(function() {
   $(".submit-button").click(function() {
     s3mp = new window.S3MP({
       bucket: 'bitcast-bucket',
-      //fileSelector: "#uploader",
+      fileInputElement: "#uploader",
       fileList: file_list,
       onStart: function(upload) {
         var id = upload.id

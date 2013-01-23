@@ -9,6 +9,7 @@ ActiveRecord::Schema.define do
     t.datetime "updated_at", :null => false
   end
   create_table "videos", :force => true do |t|
+    t.string   "name"
     t.integer  "upload_id"
     t.datetime "created_at"
     t.datetime "updated_at"
