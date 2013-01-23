@@ -1,16 +1,15 @@
 require 'spec_helper.rb'
 
-class UploaderTest
-  include S3Multipart::Uploader
-end
-
-describe "Uploader module" do
+describe "An upload object" do
   before(:all) do
-    @uploader = UploaderTest.new
+    class Upload
+      include S3Multipart::TransferHelpers
+    end
+    @upload = Upload.new
   end
 
   it "should initiate an upload" do
-    response = @uploader.initiate( object_name: "example_object.wmv",
+    response = @upload.initiate( object_name: "example_object.wmv",
                                   content_type: "video/x-ms-wmv" )
 
     response["upload_id"].should be_an_instance_of(String)
@@ -19,7 +18,7 @@ describe "Uploader module" do
   end
 
   it "should sign many parts" do
-    response = @uploader.sign_batch(    object_name: "example_object",
+    response = @upload.sign_batch(    object_name: "example_object",
                                     content_lengths: "1000000-1000000-1000000",
                                           upload_id: "a83jrhfs94jcj3c3" ) 
 
@@ -28,7 +27,7 @@ describe "Uploader module" do
   end
 
   it "should sign a single part" do
-    response = @uploader.sign_part(   object_name: "example_object",
+    response = @upload.sign_part(   object_name: "example_object",
                                    content_length: "1000000",
                                         upload_id: "a83jrhfs94jcj3c3" ) 
 
@@ -37,7 +36,7 @@ describe "Uploader module" do
   end
 
   it "should unsuccessfully attempt to complete an upload that doesn't exist" do
-    response = @uploader.complete(    object_name: "example_object",
+    response = @upload.complete(    object_name: "example_object",
                                    content_length: "1000000",
                                             parts: [{partNum: 1, ETag: "jf93nda3Sf8FSh"}],
                                      content_type: "application/xml",
