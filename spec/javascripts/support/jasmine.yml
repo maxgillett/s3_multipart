@@ -1,3 +1,10 @@
+#######################################################
+##                                                   ##
+##   No longer being used. For use with jasmine gem  ##
+##                                                   ##
+#######################################################
+
+
 # src_files
 #
 # Return an array of filepaths relative to src_dir to include before jasmine specs.

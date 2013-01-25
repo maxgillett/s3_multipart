@@ -9,3 +9,7 @@ config.ru
 
 .rvmrc
 .rspec
+
+_SpecRunner.html
+
+/node_modules

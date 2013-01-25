@@ -13,7 +13,7 @@ group :development do
   gem 'rspec'
   gem 'rspec-rails'
   gem 'capybara'
-  gem 'jasmine'
+  # gem 'jasmine'
 
   # assets
   gem 'sass-rails',   '~> 3.2.3'
