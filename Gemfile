@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-
-
 group :development do
   gem 'activerecord'
   gem 'sqlite3'
@@ -15,12 +13,12 @@ group :development do
   gem 'rspec'
   gem 'rspec-rails'
   gem 'capybara'
+  gem 'jasmine'
 
   # assets
   gem 'sass-rails',   '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
   gem 'compass-rails'
-  #gem 'jquery-rails'
   gem 'jquery-ui-rails'
 
   gemspec
