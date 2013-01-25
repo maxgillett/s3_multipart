@@ -6,3 +6,10 @@ config.ru
 /spec/setup_credentials.rb
 
 *.gem
+
+.rvmrc
+.rspec
+
+_SpecRunner.html
+
+/node_modules
