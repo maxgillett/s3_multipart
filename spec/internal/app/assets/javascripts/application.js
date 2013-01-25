@@ -13,7 +13,7 @@
 //= require underscore
 //= require_tree .
 //= require jquery.ui.progressbar
-//= require s3_multipart/s3_multipart
+//= require s3_multipart/lib
 
 $(function() {
   var file_list, s3mp;
