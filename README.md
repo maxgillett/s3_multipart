@@ -33,7 +33,7 @@ Next, install the gem, and add it to your gemfile.
 gem install s3_multipart
 ```
 
-Run the included generator to create the required migrations and configuration files. 
+Run the included generator to create the required migrations and configuration files. Make sure to migrate after performing this step.
 
 ```bash
 rails g s3_multipart:install
@@ -41,8 +41,8 @@ rails g s3_multipart:install
 
 If you are using sprockets, add the following to your application.js file. Make sure that the latest underscore and jQuery libraries have been required before this line. Lodash is not supported at this time.
 
-```ruby
-//= require s3_multipart
+```js
+//= require s3_multipart/lib
 ```
 
 Also in your application.js file you will need to include the following:
@@ -77,7 +77,7 @@ $(function() {
 });
 ```
 
-This piece of code does some configuration and provides various callbacks that you can hook into. It will be discussed further at the end of the Getting Started guide.
+This piece of code does some configuration and provides various callbacks that you can hook into. It will be discussed further at the end of the Getting Started guide below.
 
 Finally, edit the aws.yml that was created in your config folder with the correct credentials for each environment.
 
@@ -90,7 +90,7 @@ development:
 
 ## Getting Started
 
-S3_Multipart comes with an additional generator to set up your upload controllers. Running
+S3_Multipart comes with a generator to set up your upload controllers. Running
 
 ```bash
 rails g s3_multipart:uploader video
@@ -141,16 +141,17 @@ To add the multipart uploader to a view, insert the following:
                             input_name: 'uploader',
                             uploader: 'VideoUploader'
                             button: {class: 'submit-button', text: 'Upload selected videos'},
-                            html: %Q{<button class="upload-button">Select a Video</button>}) %>
+                            html: %Q{<button class="upload-button">Select videos</button>}) %>
 ```
 
-The `multipart_uploader_form` function is a view helper, and generates the necessary input elements. It takes in a hash of allowed MIME types and a string of html to be interpolated between the generated file input element and submit button. It also expects an upload controller (as a string or constant) to be passed in with the 'uploader' option. This links the upload form with the callbacks specified in the given controller.
+The `multipart_uploader_form` function is a view helper, and generates the necessary input elements. It takes in a array of allowed MIME types and a string of html to be interpolated between the generated file input element and submit button. It also expects an upload controller (as a string or constant) to be passed in with the 'uploader' option. This links the upload form with the callbacks specified in the given controller.
 
 The code above outputs this:
 
 ```html
-<input accept="video/mpeg" id="uploader" name="uploader" type="file">
-<button class="submit-button">Upload selected videos</button>
+<input accept="video" data-uploader="7b2a340f42976e5520975b5d5668dc4c19b38f2c" id="uploader" multiple="multiple" name="uploader" type="file" style="left: 34px; top: 20px;">
+<button class="upload-button" type="submit">Select videos</button>
+<button class="submit-button"><span>Upload selected videos</span></button>
 ```
 
 Let's return to the javascript that you inserted into the application.js during setup. The S3MP constructor takes in a configuration object with a handful of required callback functions. It also takes in list of files (through the `fileList` property) that is an array of File objects. This could be retrieved by calling `$("#uploader").get(0).files` if the input element had an "uploader" id, or it could be manually constructed. See the internal tests for an example of this manual construction. 
@@ -193,6 +194,8 @@ run Combustion::Application
 ```
 
 and boot up the app by running `rackup`. A fully functional uploader is now available if you visit http://localhost:9292
+
+Jasmine tests are also available for the client-facing javascript library. After installing [Grunt](http://gruntjs.com/) and [PhantomJS](http://phantomjs.org/), and running `npm install` once, you can run the tests by running `grunt jasmine`. 
 
 ## Contributing
 
