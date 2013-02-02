@@ -16,15 +16,16 @@ class VideoUploader < ApplicationController
   # - name:      The name of the file (including extensions)
   # - location:  The location of the file on S3. Available only to the
   #              upload object passed into the on_complete callback
-  #
-  on_begin do |upload|
+  #  
+  on_begin do |upload, session|
     video = Video.create(name: "test")
+    video.user = User.find(session[:user_id])
     upload.video = video
     upload.update_attributes(location: "Unknown")
   end
 
   # See above comment. Called when the upload has successfully completed
-  on_complete do |upload|
+  on_complete do |upload, session|
     # Code to be evaluated when upload completes                                                 
   end
 
