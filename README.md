@@ -108,7 +108,7 @@ class VideoUploader < ApplicationController
 
   # Takes in a block that will be evaluated when the upload has been 
   # successfully initiated. The block will be passed an instance of 
-  # the upload object when the callback is made. 
+  # the upload object as well as the session hash when the callback is made. 
   # 
   # The following attributes are available on the upload object:
   # - key:       A randomly generated unique key to replace the file
@@ -118,12 +118,12 @@ class VideoUploader < ApplicationController
   # - location:  The location of the file on S3. Available only to the
   #              upload object passed into the on_complete callback
   #
-  on_begin do |upload|
+  on_begin do |upload, session|
     # Code to be evaluated when upload completes  
   end
 
   # See above comment. Called when the upload has successfully completed
-  on_complete do |upload|
+  on_complete do |upload, session|
     # Code to be evaluated when upload completes                                                 
   end
 
@@ -195,7 +195,9 @@ run Combustion::Application
 
 and boot up the app by running `rackup`. A fully functional uploader is now available if you visit http://localhost:9292
 
-Jasmine tests are also available for the client-facing javascript library. After installing [Grunt](http://gruntjs.com/) and [PhantomJS](http://phantomjs.org/), and running `npm install` once, you can run the tests by running `grunt jasmine`. 
+Jasmine tests are also available for the client-facing javascript library. After installing [Grunt](http://gruntjs.com/) and [PhantomJS](http://phantomjs.org/), and running `npm install` once, you can run the tests headlessly by running `grunt jasmine`. 
+
+To re-build the javascript library, run `grunt concat` and to minify, `grunt min`.
 
 ## Contributing
 
