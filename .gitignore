@@ -13,3 +13,5 @@ config.ru
 _SpecRunner.html
 
 /node_modules
+
+/spec/internal/db/combustion_test.sqlite3
