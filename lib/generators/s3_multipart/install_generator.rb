@@ -11,8 +11,8 @@ module S3Multipart
     end
 
     def create_configuration_files
-      copy_file "aws.yml", "app/config/aws.yml" 
-      copy_file "configuration_initializer.rb", "app/config/initializers/s3_multipart.rb"
+      copy_file "aws.yml", "config/aws.yml"
+      copy_file "configuration_initializer.rb", "config/initializers/s3_multipart.rb"
       route 'mount S3Multipart::Engine => "/s3_multipart"'
     end
 
