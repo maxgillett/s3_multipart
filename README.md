@@ -2,11 +2,11 @@
 
 The S3 Multipart gem brings direct multipart uploading to S3 to Rails. Data is piped from the client straight to Amazon S3 and a server-side callback is run when the upload is complete.
 
-Multipart uploading allows files to be split into many chunks and uploaded in parallel or succession (or both). This can result in dramatically increased upload speeds for the client and allows for the pausing and resuming of uploads. For a more complete overview of multipart uploading as it applies to S3, see the overview [here](http://docs.amazonwebservices.com/AmazonS3/latest/dev/mpuoverview.html). 
+Multipart uploading allows files to be split into many chunks and uploaded in parallel or succession (or both). This can result in dramatically increased upload speeds for the client and allows for the pausing and resuming of uploads. For a more complete overview of multipart uploading as it applies to S3, see the documentation [here](http://docs.amazonwebservices.com/AmazonS3/latest/dev/mpuoverview.html). 
 
 ## Setup
 
-First, assuming that you already have an S3 bucket set up, you will need to paste the following into your CORS configuration file, located under the permissions tab.
+First, assuming that you already have an S3 bucket set up, you will need to paste the following into your CORS configuration file, located under the permissions tab in your S3 console.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -140,7 +140,8 @@ To add the multipart uploader to a view, insert the following:
 <%= multipart_uploader_form(types: ['video/mpeg'],
                             input_name: 'uploader',
                             uploader: 'VideoUploader'
-                            button: {class: 'submit-button', text: 'Upload selected videos'},
+                            button_class: 'submit-button', 
+                            button_text: 'Upload selected videos',
                             html: %Q{<button class="upload-button">Select videos</button>}) %>
 ```
 
@@ -149,14 +150,14 @@ The `multipart_uploader_form` function is a view helper, and generates the neces
 The code above outputs this:
 
 ```html
-<input accept="video" data-uploader="7b2a340f42976e5520975b5d5668dc4c19b38f2c" id="uploader" multiple="multiple" name="uploader" type="file" style="left: 34px; top: 20px;">
+<input accept="video" data-uploader="7b2a340f42976e5520975b5d5668dc4c19b38f2c" id="uploader" multiple="multiple" name="uploader" type="file">
 <button class="upload-button" type="submit">Select videos</button>
 <button class="submit-button"><span>Upload selected videos</span></button>
 ```
 
 Let's return to the javascript that you inserted into the application.js during setup. The S3MP constructor takes in a configuration object with a handful of required callback functions. It also takes in list of files (through the `fileList` property) that is an array of File objects. This could be retrieved by calling `$("#uploader").get(0).files` if the input element had an "uploader" id, or it could be manually constructed. See the internal tests for an example of this manual construction. 
 
-The S3MP constructor also returns an object that you can interact with. You can call cancel, pause, or resume on this object and pass in the zero-indexed key of the file in the fileList array you want to control.
+The S3MP constructor also returns an object that you can interact with. Although not demonstrated here, you can call cancel, pause, or resume on this object and pass in the zero-indexed key of the file in the fileList array you want to control.
 
 ## Tests
 

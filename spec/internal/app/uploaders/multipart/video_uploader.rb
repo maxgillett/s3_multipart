@@ -17,7 +17,7 @@ class VideoUploader < ApplicationController
   # - location:  The location of the file on S3. Available only to the
   #              upload object passed into the on_complete callback
   #  
-  on_begin do |upload|
+  on_begin do |upload, session|
     video = Video.create(name: "test")
     video.user = User.find(session[:user_id])
     upload.video = video
