@@ -7,7 +7,7 @@ class <%= model_constant %>Uploader < ApplicationController
 
   # Takes in a block that will be evaluated when the upload has been 
   # successfully initiated. The block will be passed an instance of 
-  # the upload object when the callback is made. 
+  # the upload object as well as the session hashwhen the callback is made. 
   # 
   # The following attributes are available on the upload object:
   # - key:       A randomly generated unique key to replace the file
@@ -17,12 +17,12 @@ class <%= model_constant %>Uploader < ApplicationController
   # - location:  The location of the file on S3. Available only to the
   #              upload object passed into the on_complete callback
   #
-  on_begin do |upload|
+  on_begin do |upload, session|
     # Code to be evaluated when upload begins.
   end
 
   # See above comment. Called when the upload has successfully completed
-  on_complete do |upload|
+  on_complete do |upload, session|
     # Code to be evaluated when upload completes                                                 
   end
 
