@@ -2,7 +2,7 @@
 
 The S3 Multipart gem brings direct multipart uploading to S3 to Rails. Data is piped from the client straight to Amazon S3 and a server-side callback is run when the upload is complete.
 
-Multipart uploading allows files to be split into many chunks and uploaded in parallel or succession (or both). This can result in dramatically increased upload speeds for the client and allows for the pausing and resuming of uploads. For a more complete overview of multipart uploading as it applies to S3, see the documentation [here](http://docs.amazonwebservices.com/AmazonS3/latest/dev/mpuoverview.html). 
+Multipart uploading allows files to be split into many chunks and uploaded in parallel or succession (or both). This can result in dramatically increased upload speeds for the client and allows for the pausing and resuming of uploads. For a more complete overview of multipart uploading as it applies to S3, see the documentation [here](http://docs.amazonwebservices.com/AmazonS3/latest/dev/mpuoverview.html). Read more about the philosophy behind the gem on the Bitcast [blog](http://blog.bitcast.io/post/43001057745/direct-multipart-uploads-to-s3-in-rails).
 
 ## Setup
 
@@ -105,6 +105,9 @@ class VideoUploader < ApplicationController
   # Attaches the specified model to the uploader, creating a "has_one" 
   # relationship between the internal upload model and the given model.
   attach :video
+
+  # Only accept certain file types. Expects an array of valid extensions.
+  accept %w(wmv avi mp4 mkv mov mpeg)
 
   # Takes in a block that will be evaluated when the upload has been 
   # successfully initiated. The block will be passed an instance of 
