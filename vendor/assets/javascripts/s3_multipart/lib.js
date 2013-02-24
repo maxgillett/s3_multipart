@@ -155,12 +155,10 @@ function S3MP(options) {
   }
 
   _.each(files, function(file, key) {
-    //Do validation for each file before creating a new upload object
-    // if (!file.type.match(/video/)) {
-    //   return false;
-    // }
     if (file.size < 5000000) {
       return S3MP.onError({name: "FileSizeError", message: "File size is too small"})
+      // This should still work. The multipart API just can't be used b/c Amazon doesn't allow 
+      // multipart file uploads that are less than 5 mb in size.
     }
 
     var upload = new Upload(file, S3MP, key);
@@ -341,6 +339,7 @@ S3MP.prototype.resume = function(key) {
 
   this.onResume();          
 };
+
 // Upload constructor
 function Upload(file, o, key) {
   function Upload() {
@@ -369,25 +368,25 @@ function Upload(file, o, key) {
     } else if (this.size > 100000000) { // greater than 100 mb
       num_segs = 20;
       pipes = 5;
-    } else if (this.size > 5000000) { // greater than 5 mb (S3 does not allow multipart uploads < 5 mb)
+    } else { // greater than 5 mb (S3 does not allow multipart uploads < 5 mb)
       num_segs = 2;
       pipes = 2;
-    } else { 
-      num_segs = 10;
-      pipes = 3;
-    }         
+    }  
 
     chunk_segs = _.range(num_segs + 1);
     chunk_lens = _.map(chunk_segs, function(seg) {
       return Math.round(seg * (file.size/num_segs));
     });
 
-    this.parts = _.map(chunk_lens, function(len, i) {
-      blob = upload.sliceBlob(file, len, chunk_lens[i+1]);
-      return new UploadPart(blob, i+1, upload);
-    });
-
-    this.parts.pop(); // Remove the empty blob at the end of the array
+    if (upload.sliceBlob == "Unsupported") {
+      this.parts = [new UploadPart(file, 0, upload)];
+    } else {
+      this.parts = _.map(chunk_lens, function(len, i) {
+        blob = upload.sliceBlob(file, len, chunk_lens[i+1]);
+        return new UploadPart(blob, i+1, upload);
+      });
+      this.parts.pop(); // Remove the empty blob at the end of the array
+    }
 
     // init function will initiate the multipart upload, sign all the parts, and 
     // start uploading some parts in parallel
@@ -417,6 +416,7 @@ function Upload(file, o, key) {
   Upload.prototype = o;
   return new Upload(); 
 }
+
 // Upload part constructor 
 function UploadPart(blob, key, upload) {
   var part, xhr;

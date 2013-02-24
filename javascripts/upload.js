@@ -26,25 +26,25 @@ function Upload(file, o, key) {
     } else if (this.size > 100000000) { // greater than 100 mb
       num_segs = 20;
       pipes = 5;
-    } else if (this.size > 5000000) { // greater than 5 mb (S3 does not allow multipart uploads < 5 mb)
+    } else { // greater than 5 mb (S3 does not allow multipart uploads < 5 mb)
       num_segs = 2;
       pipes = 2;
-    } else { 
-      num_segs = 10;
-      pipes = 3;
-    }         
+    }  
 
     chunk_segs = _.range(num_segs + 1);
     chunk_lens = _.map(chunk_segs, function(seg) {
       return Math.round(seg * (file.size/num_segs));
     });
 
-    this.parts = _.map(chunk_lens, function(len, i) {
-      blob = upload.sliceBlob(file, len, chunk_lens[i+1]);
-      return new UploadPart(blob, i+1, upload);
-    });
-
-    this.parts.pop(); // Remove the empty blob at the end of the array
+    if (upload.sliceBlob == "Unsupported") {
+      this.parts = [new UploadPart(file, 0, upload)];
+    } else {
+      this.parts = _.map(chunk_lens, function(len, i) {
+        blob = upload.sliceBlob(file, len, chunk_lens[i+1]);
+        return new UploadPart(blob, i+1, upload);
+      });
+      this.parts.pop(); // Remove the empty blob at the end of the array
+    }
 
     // init function will initiate the multipart upload, sign all the parts, and 
     // start uploading some parts in parallel

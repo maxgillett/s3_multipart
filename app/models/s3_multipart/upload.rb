@@ -3,7 +3,7 @@ module S3Multipart
     extend S3Multipart::TransferHelpers
 
     attr_accessible :key, :upload_id, :name, :location, :uploader
-    before_create :validate_mime_types
+#before_create :validate_mime_types
 
     def self.create(params)
       response = initiate(params)
@@ -25,7 +25,7 @@ module S3Multipart
 
       def validate_mime_types(upload)
         ext = upload.name.match(/\.([a-zA-Z0-9]+)$/)[1]
-        controller = deserialize(uploader)
+        controller = deserialize(upload.uploader)
 
         if !controller.file_types.include?(ext)
           return false

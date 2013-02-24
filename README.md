@@ -140,15 +140,14 @@ The generator also creates the migration to add this functionality, so make sure
 To add the multipart uploader to a view, insert the following:
 
 ```ruby
-<%= multipart_uploader_form(types: ['video/mpeg'],
-                            input_name: 'uploader',
+<%= multipart_uploader_form(input_name: 'uploader',
                             uploader: 'VideoUploader'
                             button_class: 'submit-button', 
                             button_text: 'Upload selected videos',
                             html: %Q{<button class="upload-button">Select videos</button>}) %>
 ```
 
-The `multipart_uploader_form` function is a view helper, and generates the necessary input elements. It takes in a array of allowed MIME types and a string of html to be interpolated between the generated file input element and submit button. It also expects an upload controller (as a string or constant) to be passed in with the 'uploader' option. This links the upload form with the callbacks specified in the given controller.
+The `multipart_uploader_form` function is a view helper, and generates the necessary input elements. It takes in a string of html to be interpolated between the generated file input element and submit button. It also expects an upload controller (as a string or constant) to be passed in with the 'uploader' option. This links the upload form with the callbacks specified in the given controller.
 
 The code above outputs this:
 
@@ -207,11 +206,16 @@ To re-build the javascript library, run `grunt concat` and to minify, `grunt min
 
 S3_Multipart is very much a work in progress. If you squash a bug, make enhancements, or write more tests, please submit a pull request. 
 
+## Browser Compatibility
+
+The library is working on the latest version of IE, Firefox, Safari, and Chrome. Tests for over 100 browsers are currently being conducted.
+
 ## To Do
 
-* If the FileBlob API is not supported on page load, the uploader should just send one giant chunk
+* ~~If the FileBlob API is not supported on page load, the uploader should just send one giant chunk~~ (DONE)
 * Handle network errors in the javascript client library
-* Modular validations (checking file size and type)
+* ~~File type validations~~ (DONE)
+* File size validations
 * More and better tests
 * More browser testing 
 * Roll file signing and initiation into one request
