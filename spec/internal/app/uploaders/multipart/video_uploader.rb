@@ -5,6 +5,9 @@ class VideoUploader < ApplicationController
   # relationship between the internal upload model and the given model.
   attach :video
 
+  # Only accept certain file types. Expects an array of valid extensions.
+  accept %w(wmv avi mp4 mkv mov mpeg)
+
   # Takes in a block that will be evaluated when the upload has been 
   # successfully initiated. The block will be passed an instance of 
   # the upload object when the callback is made. 

@@ -8,6 +8,10 @@ if defined?(Rails)
         end
       end
 
+      initializer "s3_multipart.active_record" do
+        ActiveRecord::Base.include_root_in_json = false
+      end
+
       # Load all of the upload controllers in app/uploaders/multipart
       initializer "s3_multipart.load_upload_controllers" do
         begin

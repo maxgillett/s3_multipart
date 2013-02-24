@@ -1,11 +1,11 @@
 module S3Multipart
   class UploadsController < ApplicationController
+  
     def create
       begin
-        response = Upload.initiate(params)
-        upload = Upload.create(key: response["key"], upload_id: response["upload_id"], name: response["name"], uploader: params["uploader"])
-        response["id"] = upload["id"]
+        upload = Upload.create(params)
         upload.execute_callback(:begin, session)
+        response = upload.to_json
       rescue
         response = {error: 'There was an error initiating the upload'}
       ensure

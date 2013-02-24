@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    s3_multipart (0.0.6)
+    s3_multipart (0.0.7)
       uuid (>= 2.3.6)
       xml-simple (>= 1.1.2)
 

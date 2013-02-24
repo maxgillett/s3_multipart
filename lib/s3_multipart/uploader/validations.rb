@@ -2,7 +2,11 @@ module S3Multipart
   module Uploader
     module Validations
 
-      # To do
+      attr_accessor :file_types
+
+      def accept(types)
+        self.file_types = types         
+      end
 
     end
   end 
