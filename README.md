@@ -109,6 +109,9 @@ class VideoUploader < ApplicationController
   # Only accept certain file types. Expects an array of valid extensions.
   accept %w(wmv avi mp4 mkv mov mpeg)
 
+  # Define the minimum and maximum allowed file sizes (in bytes)
+  limit min: 5*1000*1000, max: 2*1000*1000*1000
+
   # Takes in a block that will be evaluated when the upload has been 
   # successfully initiated. The block will be passed an instance of 
   # the upload object as well as the session hash when the callback is made. 
@@ -209,6 +212,10 @@ S3_Multipart is very much a work in progress. If you squash a bug, make enhancem
 ## Browser Compatibility
 
 The library is working on the latest version of IE, Firefox, Safari, and Chrome. Tests for over 100 browsers are currently being conducted.
+
+## What's New
+
+**0.0.9** - File type and size validations are now specified in the upload controller. Untested support for browsers that lack the FileBlob API.25
 
 ## To Do
 
