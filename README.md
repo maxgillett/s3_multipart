@@ -215,7 +215,7 @@ The library is working on the latest version of IE, Firefox, Safari, and Chrome.
 
 ## What's New
 
-**0.0.9** - File type and size validations are now specified in the upload controller. Untested support for browsers that lack the FileBlob API.25
+**0.0.9** - File type and size validations are now specified in the upload controller. Untested support for browsers that lack the FileBlob API
 
 ## To Do
 
