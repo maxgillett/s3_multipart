@@ -144,7 +144,7 @@ To add the multipart uploader to a view, insert the following:
 
 ```ruby
 <%= multipart_uploader_form(input_name: 'uploader',
-                            uploader: 'VideoUploader'
+                            uploader: 'VideoUploader',
                             button_class: 'submit-button', 
                             button_text: 'Upload selected videos',
                             html: %Q{<button class="upload-button">Select videos</button>}) %>
@@ -222,7 +222,7 @@ The library is working on the latest version of IE, Firefox, Safari, and Chrome.
 * ~~If the FileBlob API is not supported on page load, the uploader should just send one giant chunk~~ (DONE)
 * Handle network errors in the javascript client library
 * ~~File type validations~~ (DONE)
-* File size validations
+* ~~File size validations~~ (DONE)
 * More and better tests
 * More browser testing 
 * Roll file signing and initiation into one request
