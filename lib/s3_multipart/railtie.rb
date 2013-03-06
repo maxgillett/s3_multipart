@@ -15,7 +15,7 @@ if defined?(Rails)
       # Load all of the upload controllers in app/uploaders/multipart
       initializer "s3_multipart.load_upload_controllers" do
         begin
-          uploaders = Dir.entries(Rails.root.join('app', 'uploaders', 'multipart').to_s).keep_if {|n| n =~ /[uploader]/}
+          uploaders = Dir.entries(Rails.root.join('app', 'uploaders', 'multipart').to_s).keep_if {|n| n =~ /uploader\.rb$/}
           uploaders.each do |uploader|
             require "#{Rails.root.join('app', 'uploaders', 'multipart')}/#{uploader}"
           end

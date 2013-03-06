@@ -18,6 +18,9 @@ module S3Multipart
 
   end
 
+  class FileTypeError < StandardError; end
+  class FileSizeError < StandardError; end
+
 end
 
 require 's3_multipart/config'

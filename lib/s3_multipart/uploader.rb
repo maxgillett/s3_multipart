@@ -16,7 +16,6 @@ module S3Multipart
       controllers[controller.to_s.to_sym]
     end
 
-    # What is wrong with this method?
     def self.deserialize(digest)
       controllers.key(digest).to_s.constantize
     end

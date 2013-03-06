@@ -8,6 +8,9 @@ class VideoUploader < ApplicationController
   # Only accept certain file types. Expects an array of valid extensions.
   accept %w(wmv avi mp4 mkv mov mpeg)
 
+  # Define the minimum and maximum allowed file sizes (in bytes)
+  limit min: 5*1000*1000, max: 2*1000*1000*1000
+
   # Takes in a block that will be evaluated when the upload has been 
   # successfully initiated. The block will be passed an instance of 
   # the upload object when the callback is made. 

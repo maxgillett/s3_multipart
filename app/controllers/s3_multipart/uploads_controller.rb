@@ -6,7 +6,9 @@ module S3Multipart
         upload = Upload.create(params)
         upload.execute_callback(:begin, session)
         response = upload.to_json
-      rescue
+      rescue FileTypeError, FileSizeError => e
+        response = {error: e.message}
+      rescue 
         response = {error: 'There was an error initiating the upload'}
       ensure
         render :json => response
