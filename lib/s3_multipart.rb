@@ -23,6 +23,7 @@ module S3Multipart
 
 end
 
+require 's3_multipart/version'
 require 's3_multipart/config'
 require 's3_multipart/railtie'
 require 's3_multipart/engine'

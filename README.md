@@ -6,7 +6,7 @@ Multipart uploading allows files to be split into many chunks and uploaded in pa
 
 ## What's New
 
-**0.0.10** - Fixed some bugs. Modifications made to the database table used by the gem are now handled by migrations. If you are upgrading versions, run `rails g s3_multipart:install_new_migrations` followed by `rake db:migrate`. Fresh installs do not require subsequent migrations. The current version must now also be passed in to the gem's configuration function to alert you of breaking changes. This is done by setting a revision yml variable. See the section regarding the aws.yml file in the readme section below (just before "Getting Started").
+**0.0.10.2** - Fixed some bugs. Modifications made to the database table used by the gem are now handled by migrations. If you are upgrading versions, run `rails g s3_multipart:install_new_migrations` followed by `rake db:migrate`. Fresh installs do not require subsequent migrations. The current version must now also be passed in to the gem's configuration function to alert you of breaking changes. This is done by setting a revision yml variable. See the section regarding the aws.yml file in the readme section below (just before "Getting Started").
 
 **0.0.9** - File type and size validations are now specified in the upload controller. Untested support for browsers that lack the FileBlob API
 
