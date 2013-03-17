@@ -4,6 +4,12 @@ The S3 Multipart gem brings direct multipart uploading to S3 to Rails. Data is p
 
 Multipart uploading allows files to be split into many chunks and uploaded in parallel or succession (or both). This can result in dramatically increased upload speeds for the client and allows for the pausing and resuming of uploads. For a more complete overview of multipart uploading as it applies to S3, see the documentation [here](http://docs.amazonwebservices.com/AmazonS3/latest/dev/mpuoverview.html). Read more about the philosophy behind the gem on the Bitcast [blog](http://blog.bitcast.io/post/43001057745/direct-multipart-uploads-to-s3-in-rails).
 
+## What's New
+
+**0.0.10** - Fixed some bugs. Modifications made to the database table used by the gem are now handled by migrations. If you are upgrading versions, run `rails g s3_multipart:install_new_migrations` followed by `rake db:migrate`. Fresh installs do not require subsequent migrations. The current version must now also be passed in to the gem's configuration function to alert you of breaking changes. This is done by setting a revision yml variable. See the section regarding the aws.yml file in the readme section below (just before "Getting Started").
+
+**0.0.9** - File type and size validations are now specified in the upload controller. Untested support for browsers that lack the FileBlob API
+
 ## Setup
 
 First, assuming that you already have an S3 bucket set up, you will need to paste the following into your CORS configuration file, located under the permissions tab in your S3 console.
@@ -79,13 +85,14 @@ $(function() {
 
 This piece of code does some configuration and provides various callbacks that you can hook into. It will be discussed further at the end of the Getting Started guide below.
 
-Finally, edit the aws.yml that was created in your config folder with the correct credentials for each environment.
+Finally, edit the aws.yml that was created in your config folder with the correct credentials for each environment. Set the revision number to the current version number. If breaking changes are made to the gem in a later version, then you will be notified when the two versions do not match in the log.
 
 ```yaml
 development:
   access_key_id: ""
   secret_access_key: ""
   bucket: ""
+  revision: "#.#.#"
 ```
 
 ## Getting Started
@@ -174,6 +181,7 @@ S3Multipart.configure do |config|
   config.bucket_name   = ''
   config.s3_access_key = ''
   config.s3_secret_key = ''
+  config.revision = S3Multipart::Version
 end
 ```
 
@@ -194,6 +202,7 @@ S3Multipart.configure do |config|
   config.bucket_name   = ''
   config.s3_access_key = ''
   config.s3_secret_key = ''
+  config.revision = S3Multipart::Version
 end
 
 run Combustion::Application
@@ -213,9 +222,6 @@ S3_Multipart is very much a work in progress. If you squash a bug, make enhancem
 
 The library is working on the latest version of IE, Firefox, Safari, and Chrome. Tests for over 100 browsers are currently being conducted.
 
-## What's New
-
-**0.0.9** - File type and size validations are now specified in the upload controller. Untested support for browsers that lack the FileBlob API
 
 ## To Do
 

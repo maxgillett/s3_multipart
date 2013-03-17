@@ -15,9 +15,9 @@ module S3Multipart
       
       case stage
       when :begin
-        controller.on_begin_callback.call(self, session)
+        controller.on_begin_callback.call(self, session) if controller.on_begin_callback
       when :complete
-        controller.on_complete_callback.call(self, session)
+        controller.on_complete_callback.call(self, session) if controller.on_begin_callback
       end
     end
 
