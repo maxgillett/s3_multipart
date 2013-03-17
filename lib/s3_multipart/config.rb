@@ -11,8 +11,8 @@ module S3Multipart
     end
 
     def self.check_for_breaking_changes
-      if self.instance.revision != VERSION
-        Rails.logger.fatal "Breaking changes were made to the S3_Multipart gem:\n #{BREAKING_CHANGES[VERSION.to_sym]}\n See the Readme for additional information"
+      if self.instance.revision != VERSION 
+        raise ArgumentError, "Breaking changes were made to the S3_Multipart gem:\n #{BREAKING_CHANGES[VERSION.to_sym]}\n See the Readme for additional information."
       end
     end
   end
