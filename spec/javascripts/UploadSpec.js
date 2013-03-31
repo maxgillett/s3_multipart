@@ -31,7 +31,7 @@ describe("An upload", function() {
 
     file = {
       name: 'test.mkv',
-      size: 7500000,
+      size: 15000000,
       type: 'video/mkv'
     };
 
