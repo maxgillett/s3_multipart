@@ -19,7 +19,7 @@ $(function() {
   var file_list, s3mp;
 
   $(".submit-button").click(function() {
-    s3mp = new window.S3MP({
+    window.s3mp = new window.S3MP({
       bucket: 'bitcast-bucket',
       fileInputElement: "#uploader",
       fileList: file_list,
