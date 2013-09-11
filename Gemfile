@@ -13,7 +13,10 @@ group :development do
   gem 'rspec'
   gem 'rspec-rails'
   gem 'capybara'
-  # gem 'jasmine'
+  gem 'jasmine'
+  gem 'sauce', '~> 2.4.0'
+  gem 'sauce-connect', '~> 2.4.0'
+  gem 'parallel_tests'
 
   # assets
   gem 'sass-rails',   '~> 3.2.3'

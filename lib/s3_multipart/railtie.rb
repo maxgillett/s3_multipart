@@ -1,5 +1,10 @@
 if defined?(Rails)
   module S3Multipart
+
+    class << self
+      attr_accessor :logger
+    end
+
     class Railtie < Rails::Railtie
 
       initializer "s3_multipart.action_view" do 
@@ -22,6 +27,10 @@ if defined?(Rails)
         rescue
           # Give some sort of error in the console
         end
+      end
+
+      initializer "rails logger" do
+        S3Multipart.logger = Rails.logger
       end
 
     end

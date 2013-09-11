@@ -18,3 +18,7 @@ _SpecRunner.html
 
 *.swp
 *.swo
+
+*.wmv
+
+Sauce-Connect.jar

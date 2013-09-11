@@ -1,3 +1,5 @@
+require "securerandom"
+
 module S3Multipart
   class UploadsController < ApplicationController
   
@@ -8,8 +10,9 @@ module S3Multipart
         response = upload.to_json
       rescue FileTypeError, FileSizeError => e
         response = {error: e.message}
-      rescue 
-        response = {error: 'There was an error initiating the upload'}
+      rescue => e
+        e_id = handle_error(e)
+        response = {error: "There was an error initiating the upload. Error ID: #{e_id}"}
       ensure
         render :json => response
       end
@@ -26,8 +29,9 @@ module S3Multipart
       def sign_batch
         begin
           response = Upload.sign_batch(params)
-        rescue
-          response = {error: 'There was an error in processing your upload'}
+        rescue => e
+          e_id = handle_error(e)
+          response = {error: "There was an error in processing your upload. Error ID: #{e_id}"}
         ensure
           render :json => response
         end
@@ -36,8 +40,9 @@ module S3Multipart
       def sign_part
         begin
           response = Upload.sign_part(params)
-        rescue
-          response = {error: 'There was an error in processing your upload'}
+        rescue => e
+          e_id = handle_error(e)
+          response = {error: "There was an error in processing your upload. Error ID: #{e_id}"}
         ensure
           render :json => response
         end
@@ -49,11 +54,19 @@ module S3Multipart
           upload = Upload.find_by_upload_id(params[:upload_id])
           upload.update_attributes(location: response[:location])
           upload.execute_callback(:complete, session)
-        rescue
-          response = {error: 'There was an error completing the upload'}
+        rescue => e
+          e_id = handle_error(e)
+          response = {error: "There was an error completing your upload. Error ID: #{e_id}"}
         ensure
           render :json => response
         end
+      end
+
+      def handle_error(e)
+        e_id = SecureRandom.uuid 
+        S3Multipart.logger.debug e_id
+        S3Multipart.logger.debug e
+        S3Multipart.logger.debug e.backtrace
       end
 
   end

@@ -37,14 +37,17 @@ function Upload(file, o, key) {
       pipes = 1;
     }  
 
-    chunk_segs = _.range(num_segs + 1);
-    chunk_lens = _.map(chunk_segs, function(seg) {
-      return Math.round(seg * (file.size/num_segs));
-    });
 
-    if (upload.sliceBlob == "Unsupported") {
-      this.parts = [new UploadPart(file, 0, upload)];
+    if (upload.sliceBlob != "Unsupported") {
+      // Blobs are not supported, so don't split the file up. Just upload a single part
+      pipes = 1;
+      this.parts = [new UploadPart(file, 1, upload)];
     } else {
+      // Blobs are supported, so split the file up into many parts
+      chunk_segs = _.range(num_segs + 1);
+      chunk_lens = _.map(chunk_segs, function(seg) {
+        return Math.round(seg * (file.size/num_segs));
+      });
       this.parts = _.map(chunk_lens, function(len, i) {
         blob = upload.sliceBlob(file, len, chunk_lens[i+1]);
         return new UploadPart(blob, i+1, upload);
@@ -65,7 +68,7 @@ function Upload(file, o, key) {
           _.each(parts, function(part, key) {
             var xhr = part.xhr;
 
-            xhr.open('PUT', 'http://'+upload.bucket+'.s3.amazonaws.com/'+object_name+'?partNumber='+part.num+'&uploadId='+upload_id, true);
+            xhr.open('PUT', 'https://'+upload.bucket+'.s3.amazonaws.com/'+object_name+'?partNumber='+part.num+'&uploadId='+upload_id, true);
             xhr.setRequestHeader('x-amz-date', response[key].date);
             xhr.setRequestHeader('Authorization', response[key].authorization);
 

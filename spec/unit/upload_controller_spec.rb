@@ -29,9 +29,10 @@ describe "An upload controller" do
   end
 
   it "should store the allowed file types" do
-    exts = %w(wmv avi mp4 mkv mov mpeg) 
-    GenericUploader.accept(exts)
-    GenericUploader.file_types.should eql(exts)
+    hash = { extensions: %w(wmv avi mp4 mkv mov mpeg flv), mime_types: %w(video/*) }
+    GenericUploader.accept(hash)
+    GenericUploader.extensions.should eql(hash[:extensions])
+    GenericUploader.mime_types.should eql(hash[:mime_types])
   end
 
 end

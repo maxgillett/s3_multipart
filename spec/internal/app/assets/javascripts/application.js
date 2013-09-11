@@ -27,20 +27,6 @@ $(function() {
         var id = upload.id
           , key = upload.key;
 
-        // Insert the upload details form if only one file upload is going on
-        if (file_list.length === 1) {
-          // $.ajax({
-          //   url: "/videos/"+id+"/settings",
-          //   cache: false,
-          //   success: function(html){
-          //     $(".upload-form").append(html);
-          //     $('.edit_video').bind('ajax:success', function(evt, data, status, xhr){
-          //       alert("Video updated successfully");
-          //     })
-          //   }
-          // });
-        }
-
         // Hide the upload button + list, and insert the progress bar
         $(".upload-wrapper, .upload-list").hide();
         $(".upload-list").after('<div class="progress-bar-'+key+'"></div>')
@@ -55,6 +41,7 @@ $(function() {
           .find(".speed").html("100% ("+(upload.size/1000000).toFixed(1)+" MB of "+(upload.size/1000000).toFixed(1)+" MB)");
 
         console.log("File "+upload.key+" successfully uploaded")
+        $('.left-pane').append('<div class="upload-completed">Upload has completed</div>');
       },
       onPause: function(key) {
         console.log("File "+key+" has been paused")

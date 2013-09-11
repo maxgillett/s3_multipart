@@ -28,6 +28,8 @@ module S3Multipart
 
     def sign_part(options)
       url = "/#{options[:object_name]}?partNumber=#{options[:part_number]}&uploadId=#{options[:upload_id]}"
+      S3Multipart.logger.debug url # Remove this line
+      S3Multipart.logger.debug options[:content_length] # Remove this line
       authorization, date = sign_request verb: 'PUT', url: url, content_length: options[:content_length]
       
       return {authorization: authorization, date: date}

@@ -117,11 +117,13 @@ class VideoUploader < ApplicationController
   # relationship between the internal upload model and the given model.
   attach :video
 
-  # Only accept certain file types. Expects an array of valid extensions.
-  accept %w(wmv avi mp4 mkv mov mpeg)
+  # Only accept certain file types. Expects a hash with an array of valid extensions
+  # and an optional array of valid MIME types ('audio/*', 'video/*', 'image/*',
+  # or a more specific type, i.e. 'video/mp4')
+  accept extensions: %w(wmv avi mp4 mkv mov mpeg flv), types: %w(video/*)
 
   # Define the minimum and maximum allowed file sizes (in bytes)
-  limit min: 5*1000*1000, max: 2*1000*1000*1000
+  limit min: 5_1000_1000, max: 2_1000_1000_1000
 
   # Takes in a block that will be evaluated when the upload has been 
   # successfully initiated. The block will be passed an instance of 
@@ -212,7 +214,7 @@ end
 run Combustion::Application
 ```
 
-and boot up the app by running `rackup`. A fully functional uploader is now available if you visit http://localhost:9292
+and boot up the app by running `rackup -p 9000`. A fully functional uploader is now available if you visit http://localhost:9000
 
 Jasmine tests are also available for the client-facing javascript library. After installing [Grunt](http://gruntjs.com/) and [PhantomJS](http://phantomjs.org/), and running `npm install` once, you can run the tests headlessly by running `grunt jasmine`. 
 

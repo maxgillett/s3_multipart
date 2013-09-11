@@ -2,10 +2,11 @@ module S3Multipart
   module Uploader
     module Validations
 
-      attr_accessor :file_types, :size_limits
+      attr_accessor :extensions, :mime_types, :size_limits
 
-      def accept(types)
-        self.file_types = types         
+      def accept(options)
+        self.extensions = options[:extensions] 
+        self.mime_types = options[:mime_types]
       end
 
       def limit(sizes)

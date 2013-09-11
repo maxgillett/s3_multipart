@@ -5,15 +5,17 @@ class <%= model_constant %>Uploader < ApplicationController
   # relationship between the internal upload model and the given model.
   attach :<%= model %>
 
-  # Only accept certain file types. Expects an array of valid extensions.
-  accept %w(wmv avi mp4 mkv mov mpeg)
+  # Only accept certain file types. Expects a hash with an array of valid extensions
+  # and an optional array of valid MIME types ('audio/*', 'video/*', 'image/*',
+  # or a more specific type, i.e. 'video/mp4')
+  accept extensions: %w(wmv avi mp4 mkv mov mpeg flv), types: %w(video/*)
 
   # Define the minimum and maximum allowed file sizes (in bytes)
-  limit min: 5*1000*1000, max: 2*1000*1000*1000
+  limit min: 5_1000_1000, max: 2_1000_1000_1000
 
   # Takes in a block that will be evaluated when the upload has been 
   # successfully initiated. The block will be passed an instance of 
-  # the upload object as well as the session hashwhen the callback is made. 
+  # the upload object as well as the session hash when the callback is made. 
   # 
   # The following attributes are available on the upload object:
   # - key:       A randomly generated unique key to replace the file
@@ -29,7 +31,7 @@ class <%= model_constant %>Uploader < ApplicationController
 
   # See above comment. Called when the upload has successfully completed
   on_complete do |upload, session|
-    # Code to be evaluated when upload completes                                                 
+    # Code to be evaluated when upload completes
   end
 
 end

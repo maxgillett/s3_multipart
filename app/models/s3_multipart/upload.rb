@@ -34,7 +34,7 @@ module S3Multipart
         ext = self.name.match(/\.([a-zA-Z0-9]+)$/)[1]
         controller = deserialize(self.uploader)
 
-        if !controller.file_types.include?(ext)
+        if !controller.extensions.include?(ext)
           raise FileTypeError, "File type not supported"
         end
       end

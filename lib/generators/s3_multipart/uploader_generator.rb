@@ -26,7 +26,11 @@ module S3Multipart
       end
 
       def model_constant
-        model.split("_").map(&:capitalize).join()
+        model_plural.split("_").map(&:capitalize).join
+      end
+
+      def model_plural
+        model.pluralize
       end
 
   end
