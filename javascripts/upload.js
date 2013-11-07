@@ -38,7 +38,7 @@ function Upload(file, o, key) {
     }  
 
 
-    if (upload.sliceBlob != "Unsupported") {
+    if (upload.sliceBlob == "Unsupported") {
       // Blobs are not supported, so don't split the file up. Just upload a single part
       pipes = 1;
       this.parts = [new UploadPart(file, 1, upload)];
