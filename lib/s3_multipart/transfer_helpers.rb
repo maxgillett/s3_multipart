@@ -5,19 +5,17 @@ module S3Multipart
   module TransferHelpers
 
     def initiate(options)
-      real_name = options[:object_name]
-      unique_name = UUID.generate + real_name.match(/.[A-Za-z0-9]+$/)[0] # clean this up later
-      url = "/#{unique_name}?uploads"
+      url = "/#{unique_name(options)}?uploads"
 
       headers = {content_type: options[:content_type]}
       headers[:authorization], headers[:date] = sign_request verb: 'POST', url: url, content_type: options[:content_type]
 
-      response = Http.post url, {headers: headers}
+      response = Http.post url, headers: headers
       parsed_response_body = XmlSimple.xml_in(response.body)  
 
-      return { "key"  => parsed_response_body["Key"][0],
-               "upload_id"   => parsed_response_body["UploadId"][0],
-               "name" => real_name }
+      { "key"  => parsed_response_body["Key"][0],
+        "upload_id"   => parsed_response_body["UploadId"][0],
+        "name" => options[:object_name] }
     end
 
     def sign_batch(options)
@@ -30,7 +28,7 @@ module S3Multipart
       url = "/#{options[:object_name]}?partNumber=#{options[:part_number]}&uploadId=#{options[:upload_id]}"
       authorization, date = sign_request verb: 'PUT', url: url, content_length: options[:content_length]
       
-      return {authorization: authorization, date: date}
+      { authorization: authorization, date: date }
     end
 
     def complete(options)
@@ -55,10 +53,23 @@ module S3Multipart
     end
 
     def sign_request(options)
-      #options.default = ""
       time = Time.now.utc.strftime("%a, %d %b %Y %T %Z")
+      [calculate_authorization_hash(time, options), time]
+    end
 
-      return [calculate_authorization_hash(time, options), time]
+    def unique_name(options)
+      url = [UUID.generate, options[:object_name]].join("/")
+      controller = S3Multipart::Uploader.deserialize(options[:uploader])
+
+      if controller.mount_point && defined?(CarrierWaveDirect)
+        uploader = controller.model.to_s.classify.constantize.new.send(controller.mount_point)
+
+        if uploader.class.ancestors.include?(CarrierWaveDirect::Uploader)
+          url = uploader.key.sub(/#{Regexp.escape(CarrierWaveDirect::Uploader::FILENAME_WILDCARD)}\z/, options[:object_name])
+        end
+      end
+
+      URI.escape(url)
     end
 
     private
