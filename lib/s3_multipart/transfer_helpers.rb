@@ -8,7 +8,11 @@ module S3Multipart
       url = "/#{unique_name(options)}?uploads"
 
       headers = {content_type: options[:content_type]}
-      headers[:authorization], headers[:date] = sign_request verb: 'POST', url: url, content_type: options[:content_type]
+      headers.merge!(options[:headers]) if options.key?(:headers)
+      headers[:authorization], headers[:date] = sign_request verb: 'POST',
+                                                             url: url,
+                                                             content_type: options[:content_type],
+                                                             headers: options[:headers]
 
       response = Http.post url, headers: headers
       parsed_response_body = XmlSimple.xml_in(response.body)  
@@ -39,7 +43,7 @@ module S3Multipart
       body = format_part_list_in_xml(options)
       headers = { content_type: options[:content_type],
                   content_length: options[:content_length] }
-                
+
       headers[:authorization], headers[:date] = sign_request verb: 'POST', url: url, content_type: options[:content_type]
 
       response = Http.post url, {headers: headers, body: body}
@@ -76,9 +80,26 @@ module S3Multipart
 
       def calculate_authorization_hash(time, options)
         date = String.new(time)
-        date.insert(0, "\nx-amz-date:") if from_upload_part?(options) && options[:parts].nil?
+        request_parts = [ options[:verb],
+                       "", # optional content md5
+                       options[:content_type]]
 
-        unsigned_request = "#{options[:verb]}\n\n#{options[:content_type]}\n#{date}\n/#{Config.instance.bucket_name}#{options[:url]}" 
+        headers = options[:headers] || {}
+
+        if from_upload_part?(options) && options[:parts].nil?
+          request_parts << "" # skip date as it's present as an x-amz- header
+          headers["x-amz-date"] = date
+        else
+          request_parts << date
+        end
+
+        if headers.present?
+          canonicalized_headers = headers.keys.sort.inject([]) {|array,k| array.push "#{k}:#{headers[k]}"}.join("\n")
+          request_parts << canonicalized_headers
+        end
+
+        request_parts << "/#{Config.instance.bucket_name}#{options[:url]}"
+        unsigned_request = request_parts.join("\n")
         signature = Base64.strict_encode64(OpenSSL::HMAC.digest('sha1', Config.instance.s3_secret_key, unsigned_request))
         
         authorization = "AWS" + " " + Config.instance.s3_access_key + ":" + signature
