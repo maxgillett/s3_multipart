@@ -408,12 +408,8 @@ function Upload(file, o, key) {
 
         upload.signPartRequests(id, object_name, upload_id, parts, function(response) {
           _.each(parts, function(part, key) {
-            var xhr = part.xhr;
-
-            xhr.open('PUT', 'http://'+upload.bucket+'.s3.amazonaws.com/'+object_name+'?partNumber='+part.num+'&uploadId='+upload_id, true);
-            xhr.setRequestHeader('x-amz-date', response[key].date);
-            xhr.setRequestHeader('Authorization', response[key].authorization);
-
+            part.date = response[key].date;
+            part.auth = response[key].authorization;
             // Notify handler that an xhr request has been opened
             upload.handler.beginUpload(pipes, upload);
           });
@@ -435,6 +431,7 @@ function UploadPart(blob, key, upload) {
   this.size = blob.size;
   this.blob = blob;
   this.num = key;
+  this.upload = upload;
 
   this.xhr = xhr = upload.createXhrRequest();
   xhr.onload = function() {
@@ -444,7 +441,7 @@ function UploadPart(blob, key, upload) {
     upload.handler.onError(upload, part);
   };
   xhr.upload.onprogress = _.throttle(function(e) {
-    if (upload.inprogress[key] != 0) {
+    if (e.lengthComputable) {
       upload.inprogress[key] = e.loaded;
     }
   }, 1000);
@@ -452,6 +449,10 @@ function UploadPart(blob, key, upload) {
 };
 
 UploadPart.prototype.activate = function() { 
+  this.xhr.open('PUT', 'http://'+this.upload.bucket+'.s3.amazonaws.com/'+this.upload.object_name+'?partNumber='+this.num+'&uploadId='+this.upload.upload_id, true);
+  this.xhr.setRequestHeader('x-amz-date', this.date);
+  this.xhr.setRequestHeader('Authorization', this.auth);
+
   this.xhr.send(this.blob);
   this.status = "active";
 };
