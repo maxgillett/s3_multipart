@@ -34,11 +34,11 @@ module S3Multipart
       end
 
       def attach(model, options = {})
-        self.mount_point = options[:using] if options.key?(:using)
+        self.mount_point = options.delete(:using)
         self.model = model
 
         S3Multipart::Upload.class_eval do
-          has_one(model)
+          has_one(model, options)
         end
       end
 
