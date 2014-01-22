@@ -16,7 +16,7 @@ module S3Multipart
       when :begin
         controller.on_begin_callback.call(self, session) if controller.on_begin_callback
       when :complete
-        controller.on_complete_callback.call(self, session) if controller.on_begin_callback
+        controller.on_complete_callback.call(self, session) if controller.on_complete_callback
       end
     end
 
