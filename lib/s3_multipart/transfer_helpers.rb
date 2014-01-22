@@ -23,7 +23,7 @@ module S3Multipart
     end
 
     def sign_batch(options)
-      parts = options[:content_lengths].split('-').each_with_index.map do |len, i|
+      parts = options[:content_lengths].to_s.split('-').each_with_index.map do |len, i|
         sign_part(options.merge!({content_length: len, part_number: i+1}))
       end
     end
