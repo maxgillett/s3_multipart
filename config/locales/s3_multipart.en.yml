@@ -1,0 +1,10 @@
+en:
+  s3_multipart:
+    errors:
+      limits:
+        min: "Please choose a larger file (min %{min})"
+        max: "Please choose a smaller file (max %{max})"
+      types: "Please choose a different format (allowed types: %{types})"
+      create: "There was an error initiating the upload"
+      update: "There was an error processing the upload"
+      complete: "There was an error completing the upload"

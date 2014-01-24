@@ -227,7 +227,7 @@ S3MP.prototype.deliverRequest = function(xhr, body, cb) {
     if (response.error) { 
       return self.onError({
         name: "ServerResponse",
-        message: "The server responded with an error"
+        message: response.error
       });  
     }
     cb(response);

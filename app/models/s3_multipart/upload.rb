@@ -1,6 +1,7 @@
 module S3Multipart
   class Upload < ::ActiveRecord::Base
     extend S3Multipart::TransferHelpers
+    include ActionView::Helpers::NumberHelper
 
     before_create :validate_file_type, :validate_file_size
 
@@ -27,8 +28,13 @@ module S3Multipart
         limits = deserialize(self.uploader).size_limits
 
         if limits.present?
-          raise FileSizeError, "File size is too small" if limits.key?(:min) && limits[:min] > size
-          raise FileSizeError, "File size is too large" if limits.key?(:max) && limits[:max] < size
+          if limits.key?(:min) && limits[:min] > size
+            raise FileSizeError, I18n.t("s3_multipart.errors.limits.min", min: number_to_human_size(limits[:min]))
+          end
+
+          if limits.key?(:max) && limits[:max] < size
+            raise FileSizeError, I18n.t("s3_multipart.errors.limits.max", max: number_to_human_size(limits[:max]))
+          end
         end
       end
 
@@ -37,7 +43,7 @@ module S3Multipart
         types = deserialize(self.uploader).file_types
 
         unless types.blank? || types.include?(ext)
-          raise FileTypeError, "File type not supported"
+          raise FileTypeError, I18n.t("s3_multipart.errors.types", types: upload.deserialize(upload.uploader).file_types.join(", "))
         end
       end
 

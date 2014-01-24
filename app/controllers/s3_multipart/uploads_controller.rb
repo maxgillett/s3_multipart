@@ -10,7 +10,7 @@ module S3Multipart
         response = {error: e.message}
       rescue => e
         logger.error "EXC: #{e.message}"
-        response = {error: 'There was an error initiating the upload'}
+        response = { error: t("s3_multipart.errors.create") }
       ensure
         render :json => response
       end
@@ -29,7 +29,7 @@ module S3Multipart
           response = Upload.sign_batch(params)
         rescue => e
           logger.error "EXC: #{e.message}"
-          response = {error: 'There was an error in processing your upload'}
+          response = {error: t("s3_multipart.errors.update")}
         ensure
           render :json => response
         end
@@ -40,7 +40,7 @@ module S3Multipart
           response = Upload.sign_part(params)
         rescue => e
           logger.error "EXC: #{e.message}"
-          response = {error: 'There was an error in processing your upload'}
+          response = {error: t("s3_multipart.errors.update")}
         ensure
           render :json => response
         end
@@ -54,7 +54,7 @@ module S3Multipart
           upload.execute_callback(:complete, session)
         rescue => e
           logger.error "EXC: #{e.message}"
-          response = {error: 'There was an error completing the upload'}
+          response = {error: t("s3_multipart.errors.complete")}
         ensure
           render :json => response
         end
