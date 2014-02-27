@@ -27,13 +27,18 @@ module S3Multipart
       include S3Multipart::Uploader::Callbacks
       include S3Multipart::Uploader::Validations
 
+      attr_accessor :mount_point, :model
+
       def self.extended(klass)
         Uploader.controllers[klass.to_s.to_sym] = Digest::SHA1.hexdigest(klass.to_s)
       end
 
-      def attach(model)
+      def attach(model, options = {})
+        self.mount_point = options.delete(:using)
+        self.model = model
+
         S3Multipart::Upload.class_eval do
-          has_one(model)
+          has_one(model, options)
         end
       end
 

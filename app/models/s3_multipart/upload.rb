@@ -1,8 +1,8 @@
 module S3Multipart
   class Upload < ::ActiveRecord::Base
     extend S3Multipart::TransferHelpers
+    include ActionView::Helpers::NumberHelper
 
-    attr_accessible :key, :upload_id, :name, :location, :uploader, :size
     before_create :validate_file_type, :validate_file_size
 
     def self.create(params)
@@ -17,7 +17,7 @@ module S3Multipart
       when :begin
         controller.on_begin_callback.call(self, session) if controller.on_begin_callback
       when :complete
-        controller.on_complete_callback.call(self, session) if controller.on_begin_callback
+        controller.on_complete_callback.call(self, session) if controller.on_complete_callback
       end
     end
 
@@ -26,16 +26,24 @@ module S3Multipart
       def validate_file_size
         size = self.size
         limits = deserialize(self.uploader).size_limits
-        raise FileSizeError, "File size is too small" if limits[:min] > size
-        raise FileSizeError, "File size is too large" if limits[:max] < size 
+
+        if limits.present?
+          if limits.key?(:min) && limits[:min] > size
+            raise FileSizeError, I18n.t("s3_multipart.errors.limits.min", min: number_to_human_size(limits[:min]))
+          end
+
+          if limits.key?(:max) && limits[:max] < size
+            raise FileSizeError, I18n.t("s3_multipart.errors.limits.max", max: number_to_human_size(limits[:max]))
+          end
+        end
       end
 
       def validate_file_type
         ext = self.name.match(/\.([a-zA-Z0-9]+)$/)[1]
-        controller = deserialize(self.uploader)
+        types = deserialize(self.uploader).file_types
 
-        if !controller.file_types.include?(ext)
-          raise FileTypeError, "File type not supported"
+        unless types.blank? || types.include?(ext)
+          raise FileTypeError, I18n.t("s3_multipart.errors.types", types: upload.deserialize(upload.uploader).file_types.join(", "))
         end
       end
 
