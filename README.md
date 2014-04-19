@@ -1,4 +1,5 @@
 # S3 Multipart
+[![Gem Version](https://badge.fury.io/rb/s3_multipart.svg)](http://badge.fury.io/rb/s3_multipart)
 
 The S3 Multipart gem brings direct multipart uploading to S3 to Rails. Data is piped from the client straight to Amazon S3 and a server-side callback is run when the upload is complete.
 
