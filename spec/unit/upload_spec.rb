@@ -9,6 +9,7 @@ describe "An upload object" do
   end
 
   it "should initiate an upload" do
+    @upload.stub(:unique_name) {'name'}
     response = @upload.initiate( object_name: "example_object.wmv",
                                   content_type: "video/x-ms-wmv" )
 
