@@ -43,7 +43,7 @@ module S3Multipart
         types = deserialize(self.uploader).file_types
 
         unless types.blank? || types.include?(ext)
-          raise FileTypeError, I18n.t("s3_multipart.errors.types", types: upload.deserialize(upload.uploader).file_types.join(", "))
+          raise FileTypeError, I18n.t("s3_multipart.errors.types", types: types.join(", "))
         end
       end
 
