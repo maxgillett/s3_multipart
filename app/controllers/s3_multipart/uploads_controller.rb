@@ -1,6 +1,6 @@
 module S3Multipart
   class UploadsController < ApplicationController
-  
+
     def create
       begin
         upload = Upload.create(params)
@@ -20,9 +20,9 @@ module S3Multipart
       return complete_upload if params[:parts]
       return sign_batch if params[:content_lengths]
       return sign_part if params[:content_length]
-    end 
+    end
 
-    private 
+    private
 
       def sign_batch
         begin

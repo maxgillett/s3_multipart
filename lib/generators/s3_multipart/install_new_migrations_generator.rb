@@ -8,6 +8,7 @@ module S3Multipart
 
     def create_latest_migrations
       copy_file "add_size_column_to_s3_multipart_uploads.rb", "db/migrate/#{migration_time}_add_size_to_s3_multipart_uploads.rb"
+      copy_file "add_context_column_to_s3_multipart_uploads.rb", "db/migrate/#{migration_time}_add_context_to_s3_multipart_uploads.rb"
     end
 
     private
