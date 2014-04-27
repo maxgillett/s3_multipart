@@ -31,7 +31,7 @@ module S3Multipart
     def sign_part(options)
       url = "/#{options[:object_name]}?partNumber=#{options[:part_number]}&uploadId=#{options[:upload_id]}"
       authorization, date = sign_request verb: 'PUT', url: URI.escape(url), content_length: options[:content_length]
-      
+
       { authorization: authorization, date: date }
     end
 
@@ -39,7 +39,7 @@ module S3Multipart
       options[:content_type] = "application/xml"
 
       url = URI.escape("/#{options[:object_name]}?uploadId=#{options[:upload_id]}")
-      
+
       body = format_part_list_in_xml(options)
       headers = { content_type: options[:content_type],
                   content_length: options[:content_length] }
@@ -101,7 +101,7 @@ module S3Multipart
         request_parts << "/#{Config.instance.bucket_name}#{options[:url]}"
         unsigned_request = request_parts.join("\n")
         signature = Base64.strict_encode64(OpenSSL::HMAC.digest('sha1', Config.instance.s3_secret_key, unsigned_request))
-        
+
         authorization = "AWS" + " " + Config.instance.s3_access_key + ":" + signature
       end
 
