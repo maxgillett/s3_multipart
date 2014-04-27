@@ -19,7 +19,6 @@ function S3MP(options) {
     , S3MP = this;
 
   _.extend(this, options);
-  this.headers = _.object(_.map(options.headers, function(v,k) { return ["x-amz-" + k.toLowerCase(), v] }));
 
   this.uploadList = [];
 
@@ -33,7 +32,7 @@ function S3MP(options) {
       var i = [];
       function beginUpload(pipes, uploadObj) {
         var key = uploadObj.key
-          , num_parts = uploadObj.parts.length;
+          , num_parts = uploadObj.parts.length
 
         if (typeof i[key] === "undefined") {
           i[key] = 0;
@@ -62,7 +61,6 @@ function S3MP(options) {
       var parts, i, ETag;
 
       parts = uploadObj.parts;
-      finished_part.status = "complete";
 
       // Append the ETag (in the response header) to the ETags array
       ETag = finished_part.xhr.getResponseHeader("ETag");
@@ -171,7 +169,6 @@ S3MP.prototype.initiateMultipart = function(upload, cb) {
   body = JSON.stringify({ object_name  : upload.name,
                           content_type : upload.type,
                           content_size : upload.size,
-                          headers      : this.headers,
                           uploader     : $(this.fileInputElement).data("uploader")
                         });
 
@@ -187,7 +184,7 @@ S3MP.prototype.signPartRequests = function(id, object_name, upload_id, parts, cb
     return memo + "-" + part.size;
   }, parts[0].size);
 
-  url = "/s3_multipart/uploads/"+id;
+  url = "s3_multipart/uploads/"+id;
   body = JSON.stringify({ object_name     : object_name,
                           upload_id       : upload_id,
                           content_lengths : content_lengths
@@ -200,7 +197,7 @@ S3MP.prototype.signPartRequests = function(id, object_name, upload_id, parts, cb
 S3MP.prototype.completeMultipart = function(uploadObj, cb) {
   var url, body, xhr;
 
-  url = '/s3_multipart/uploads/'+uploadObj.id;
+  url = 's3_multipart/uploads/'+uploadObj.id;
   body = JSON.stringify({ object_name    : uploadObj.object_name,
                           upload_id      : uploadObj.upload_id,
                           content_length : uploadObj.size,
@@ -221,7 +218,7 @@ S3MP.prototype.deliverRequest = function(xhr, body, cb) {
     if (response.error) { 
       return self.onError({
         name: "ServerResponse",
-        message: response.error
+        message: "The server responded with an error"
       });  
     }
     cb(response);
@@ -403,8 +400,12 @@ function Upload(file, o, key) {
 
         upload.signPartRequests(id, object_name, upload_id, parts, function(response) {
           _.each(parts, function(part, key) {
-            part.date = response[key].date;
-            part.auth = response[key].authorization;
+            var xhr = part.xhr;
+
+            xhr.open('PUT', 'http://'+upload.bucket+'.s3.amazonaws.com/'+object_name+'?partNumber='+part.num+'&uploadId='+upload_id, true);
+            xhr.setRequestHeader('x-amz-date', response[key].date);
+            xhr.setRequestHeader('Authorization', response[key].authorization);
+
             // Notify handler that an xhr request has been opened
             upload.handler.beginUpload(pipes, upload);
           });
@@ -426,7 +427,6 @@ function UploadPart(blob, key, upload) {
   this.size = blob.size;
   this.blob = blob;
   this.num = key;
-  this.upload = upload;
 
   this.xhr = xhr = upload.createXhrRequest();
   xhr.onload = function() {
@@ -436,7 +436,7 @@ function UploadPart(blob, key, upload) {
     upload.handler.onError(upload, part);
   };
   xhr.upload.onprogress = _.throttle(function(e) {
-    if (e.lengthComputable) {
+    if (upload.inprogress[key] != 0) {
       upload.inprogress[key] = e.loaded;
     }
   }, 1000);
@@ -444,10 +444,6 @@ function UploadPart(blob, key, upload) {
 };
 
 UploadPart.prototype.activate = function() { 
-  this.xhr.open('PUT', 'http://'+this.upload.bucket+'.s3.amazonaws.com/'+this.upload.object_name+'?partNumber='+this.num+'&uploadId='+this.upload.upload_id, true);
-  this.xhr.setRequestHeader('x-amz-date', this.date);
-  this.xhr.setRequestHeader('Authorization', this.auth);
-
   this.xhr.send(this.blob);
   this.status = "active";
 };
