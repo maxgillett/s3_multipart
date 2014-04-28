@@ -5,6 +5,7 @@ function S3MP(options) {
     , S3MP = this;
 
   _.extend(this, options);
+  this.headers = _.object(_.map(options.headers, function(v,k) { return ["x-amz-" + k.toLowerCase(), v] }));
 
   this.uploadList = [];
 
@@ -155,6 +156,7 @@ S3MP.prototype.initiateMultipart = function(upload, cb) {
   body = JSON.stringify({ object_name  : upload.name,
                           content_type : upload.type,
                           content_size : upload.size,
+                          headers      : this.headers,
                           context      : $(this.fileInputElement).data("context"),
                           uploader     : $(this.fileInputElement).data("uploader")
                         });
