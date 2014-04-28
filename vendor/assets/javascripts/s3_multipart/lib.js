@@ -438,7 +438,7 @@ function UploadPart(blob, key, upload) {
     upload.handler.onError(upload, part);
   };
   xhr.upload.onprogress = _.throttle(function(e) {
-    if (e.lengthCompuatable) {
+    if (e.lengthComputable) {
       upload.inprogress[key] = e.loaded;
     }
   }, 1000);
