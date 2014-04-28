@@ -7,6 +7,8 @@ Multipart uploading allows files to be split into many chunks and uploaded in pa
 
 ## What's New
 
+**0.0.10.6** - See pull request [23](https://github.com/maxgillett/s3_multipart/pull/23) for detailed changes. Changes will be documented in README soon.
+
 **0.0.10.5** - See pull request [16](https://github.com/maxgillett/s3_multipart/pull/16) and [18](https://github.com/maxgillett/s3_multipart/pull/18) for detailed changes. 
 
 **0.0.10.4** - Fixed a race condition that led to incorrect upload progress feedback.
