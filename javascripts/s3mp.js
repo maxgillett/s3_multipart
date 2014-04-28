@@ -18,7 +18,7 @@ function S3MP(options) {
       var i = [];
       function beginUpload(pipes, uploadObj) {
         var key = uploadObj.key
-          , num_parts = uploadObj.parts.length
+          , num_parts = uploadObj.parts.length;
 
         if (typeof i[key] === "undefined") {
           i[key] = 0;
@@ -171,7 +171,7 @@ S3MP.prototype.signPartRequests = function(id, object_name, upload_id, parts, cb
     return memo + "-" + part.size;
   }, parts[0].size);
 
-  url = "s3_multipart/uploads/"+id;
+  url = "/s3_multipart/uploads/"+id;
   body = JSON.stringify({ object_name     : object_name,
                           upload_id       : upload_id,
                           content_lengths : content_lengths
@@ -184,7 +184,7 @@ S3MP.prototype.signPartRequests = function(id, object_name, upload_id, parts, cb
 S3MP.prototype.completeMultipart = function(uploadObj, cb) {
   var url, body, xhr;
 
-  url = 's3_multipart/uploads/'+uploadObj.id;
+  url = '/s3_multipart/uploads/'+uploadObj.id;
   body = JSON.stringify({ object_name    : uploadObj.object_name,
                           upload_id      : uploadObj.upload_id,
                           content_length : uploadObj.size,
