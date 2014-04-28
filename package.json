@@ -1,9 +1,8 @@
 {
   "name": "s3_multipart",
-  "version": "0.0.10.3",
+  "version": "0.0.10.5",
   "devDependencies": {
-    "grunt": "latest",
-    "grunt-contrib-uglify": "latest",
+    "grunt": "0.3.17",
     "grunt-jasmine-runner": "latest"
   }
 }

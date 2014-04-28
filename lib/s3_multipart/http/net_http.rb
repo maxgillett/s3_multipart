@@ -31,7 +31,7 @@ module S3Multipart
         request[key.to_s.split("_").map(&:capitalize).join("-")] = val
       end
       request.body = body if body
-      
+
       @response = http.request(request)
     end
 

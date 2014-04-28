@@ -5,6 +5,7 @@ function S3MP(options) {
     , S3MP = this;
 
   _.extend(this, options);
+  this.headers = _.object(_.map(options.headers, function(v,k) { return ["x-amz-" + k.toLowerCase(), v] }));
 
   this.uploadList = [];
 
@@ -18,7 +19,7 @@ function S3MP(options) {
       var i = [];
       function beginUpload(pipes, uploadObj) {
         var key = uploadObj.key
-          , num_parts = uploadObj.parts.length
+          , num_parts = uploadObj.parts.length;
 
         if (typeof i[key] === "undefined") {
           i[key] = 0;
@@ -47,6 +48,7 @@ function S3MP(options) {
       var parts, i, ETag;
 
       parts = uploadObj.parts;
+      finished_part.status = "complete";
 
       // Append the ETag (in the response header) to the ETags array
       ETag = finished_part.xhr.getResponseHeader("ETag");
@@ -141,12 +143,6 @@ function S3MP(options) {
   }
 
   _.each(files, function(file, key) {
-    if (file.size < 5000000) {
-      return S3MP.onError({name: "FileSizeError", message: "File size is too small"})
-      // This should still work. The multipart API just can't be used b/c Amazon doesn't allow 
-      // multipart file uploads that are less than 5 mb in size.
-    }
-
     var upload = new Upload(file, S3MP, key);
     S3MP.uploadList.push(upload);
     upload.init();
@@ -161,6 +157,8 @@ S3MP.prototype.initiateMultipart = function(upload, cb) {
   body = JSON.stringify({ object_name  : upload.name,
                           content_type : upload.type,
                           content_size : upload.size,
+                          headers      : this.headers,
+                          context      : $(this.fileInputElement).data("context"),
                           uploader     : $(this.fileInputElement).data("uploader")
                         });
 
@@ -176,7 +174,7 @@ S3MP.prototype.signPartRequests = function(id, object_name, upload_id, parts, cb
     return memo + "-" + part.size;
   }, parts[0].size);
 
-  url = "s3_multipart/uploads/"+id;
+  url = "/s3_multipart/uploads/"+id;
   body = JSON.stringify({ object_name     : object_name,
                           upload_id       : upload_id,
                           content_lengths : content_lengths
@@ -189,7 +187,7 @@ S3MP.prototype.signPartRequests = function(id, object_name, upload_id, parts, cb
 S3MP.prototype.completeMultipart = function(uploadObj, cb) {
   var url, body, xhr;
 
-  url = 's3_multipart/uploads/'+uploadObj.id;
+  url = '/s3_multipart/uploads/'+uploadObj.id;
   body = JSON.stringify({ object_name    : uploadObj.object_name,
                           upload_id      : uploadObj.upload_id,
                           content_length : uploadObj.size,
@@ -210,7 +208,7 @@ S3MP.prototype.deliverRequest = function(xhr, body, cb) {
     if (response.error) { 
       return self.onError({
         name: "ServerResponse",
-        message: "The server responded with an error"
+        message: response.error
       });  
     }
     cb(response);

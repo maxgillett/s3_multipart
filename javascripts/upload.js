@@ -63,11 +63,8 @@ function Upload(file, o, key) {
 
         upload.signPartRequests(id, object_name, upload_id, parts, function(response) {
           _.each(parts, function(part, key) {
-            var xhr = part.xhr;
-
-            xhr.open('PUT', 'http://'+upload.bucket+'.s3.amazonaws.com/'+object_name+'?partNumber='+part.num+'&uploadId='+upload_id, true);
-            xhr.setRequestHeader('x-amz-date', response[key].date);
-            xhr.setRequestHeader('Authorization', response[key].authorization);
+            part.date = response[key].date;
+            part.auth = response[key].authorization;
 
             // Notify handler that an xhr request has been opened
             upload.handler.beginUpload(pipes, upload);

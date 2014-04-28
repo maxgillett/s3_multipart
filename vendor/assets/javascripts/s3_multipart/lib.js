@@ -172,6 +172,7 @@ S3MP.prototype.initiateMultipart = function(upload, cb) {
                           content_type : upload.type,
                           content_size : upload.size,
                           headers      : this.headers,
+                          context      : $(this.fileInputElement).data("context"),
                           uploader     : $(this.fileInputElement).data("uploader")
                         });
 
@@ -405,6 +406,7 @@ function Upload(file, o, key) {
           _.each(parts, function(part, key) {
             part.date = response[key].date;
             part.auth = response[key].authorization;
+
             // Notify handler that an xhr request has been opened
             upload.handler.beginUpload(pipes, upload);
           });

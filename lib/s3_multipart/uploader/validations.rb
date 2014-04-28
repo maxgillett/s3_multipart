@@ -5,7 +5,7 @@ module S3Multipart
       attr_accessor :file_types, :size_limits
 
       def accept(types)
-        self.file_types = types         
+        self.file_types = types
       end
 
       def limit(sizes)
