@@ -168,7 +168,7 @@ S3MP.prototype.initiateMultipart = function(upload, cb) {
   var url, body, xhr;
 
   url = '/s3_multipart/uploads';
-  body = JSON.stringify({ object_name  : upload.name,
+  body = JSON.stringify({ object_name  : upload.name || $(this.fileInputElement).data("filename"),
                           content_type : upload.type,
                           content_size : upload.size,
                           headers      : this.headers,
