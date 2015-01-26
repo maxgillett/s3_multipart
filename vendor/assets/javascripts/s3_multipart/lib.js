@@ -168,7 +168,7 @@ S3MP.prototype.initiateMultipart = function(upload, cb) {
   var url, body, xhr;
 
   url = '/s3_multipart/uploads';
-  body = JSON.stringify({ object_name  : upload.name,
+  body = JSON.stringify({ object_name  : upload.name || $(this.fileInputElement).data("filename"),
                           content_type : upload.type,
                           content_size : upload.size,
                           headers      : this.headers,
@@ -404,8 +404,8 @@ function Upload(file, o, key) {
 
         upload.signPartRequests(id, object_name, upload_id, parts, function(response) {
           _.each(parts, function(part, key) {
-            part.date = response[key].date;
-            part.auth = response[key].authorization;
+            part.date = response.uploads[key].date;
+            part.auth = response.uploads[key].authorization;
 
             // Notify handler that an xhr request has been opened
             upload.handler.beginUpload(pipes, upload);
