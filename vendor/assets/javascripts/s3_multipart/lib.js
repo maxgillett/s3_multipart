@@ -404,8 +404,8 @@ function Upload(file, o, key) {
 
         upload.signPartRequests(id, object_name, upload_id, parts, function(response) {
           _.each(parts, function(part, key) {
-            part.date = response[key].date;
-            part.auth = response[key].authorization;
+            part.date = response.uploads[key].date;
+            part.auth = response.uploads[key].authorization;
 
             // Notify handler that an xhr request has been opened
             upload.handler.beginUpload(pipes, upload);
