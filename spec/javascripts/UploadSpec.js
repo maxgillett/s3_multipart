@@ -20,8 +20,10 @@ describe("An upload", function() {
     });
 
     spyOn(s3mp, 'signPartRequests').andCallFake(function(id, object_name, upload_id, parts, callback) {
-      callback([{authorization:"AWS authorization code 1", date:"Thu, 24 Jan 2013 20:36:25 EST"},
-                {authorization:"AWS authroization code 2", date:"Thu, 24 Jan 2013 20:36:25 EST"}]);
+      callback({uploads: [
+        {authorization:"AWS authorization code 1", date:"Thu, 24 Jan 2013 20:36:25 EST"},
+        {authorization:"AWS authroization code 2", date:"Thu, 24 Jan 2013 20:36:25 EST"}
+      ]});
     });
     
     spyOn(s3mp, 'sliceBlob').andCallFake(function(blob, start, end) {
