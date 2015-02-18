@@ -2,9 +2,9 @@
 function Upload(file, o, key) {
   function Upload() {
     var upload, id, parts, part, segs, chunk_segs, chunk_lens, pipes, blob;
-    
+
     upload = this;
-    
+
     this.key = key;
     this.file = file;
     this.name = file.name;
@@ -23,19 +23,23 @@ function Upload(file, o, key) {
     } else if (this.size > 500000000) { // greater than 500mb
       num_segs = 50;
       pipes = 5;
-    } else if (this.size > 100000000) { // greater than 100 mb
+    // S3 requires minimum size to be 5242880 bytes, if the part
+    // is anything other than the last part.
+    } else if (this.size > 104857600) { // greater than 100 mb
       num_segs = 20;
       pipes = 5;
     } else if (this.size > 50000000) { // greater than 50 mb
       num_segs = 5;
       pipes = 2;
-    } else if (this.size > 10000000) { // greater than 10 mb
+    // S3 requires minimum size to be 5242880 bytes, if the part
+    // is anything other than the last part.
+    } else if (this.size > 10485760) { // greater than 10 mb
       num_segs = 2;
       pipes = 2;
     } else { // greater than 5 mb (S3 does not allow multipart uploads < 5 mb)
       num_segs = 1;
       pipes = 1;
-    }  
+    }
 
     chunk_segs = _.range(num_segs + 1);
     chunk_lens = _.map(chunk_segs, function(seg) {
@@ -52,7 +56,7 @@ function Upload(file, o, key) {
       this.parts.pop(); // Remove the empty blob at the end of the array
     }
 
-    // init function will initiate the multipart upload, sign all the parts, and 
+    // init function will initiate the multipart upload, sign all the parts, and
     // start uploading some parts in parallel
     this.init = function() {
       upload.initiateMultipart(upload, function(obj) {
@@ -70,10 +74,10 @@ function Upload(file, o, key) {
             upload.handler.beginUpload(pipes, upload);
           });
         });
-      }); 
-    } 
+      });
+    }
   };
   // Inherit the properties and prototype methods of the passed in S3MP instance object
   Upload.prototype = o;
-  return new Upload(); 
+  return new Upload();
 }
