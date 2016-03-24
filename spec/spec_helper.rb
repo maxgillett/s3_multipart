@@ -10,6 +10,8 @@ Combustion.initialize!
 require 'rspec/rails'
 require 'capybara/rails'
 
+require 'generator_spec'
+
 RSpec.configure do |config|
   #config.use_transactional_fixtures = true
 end

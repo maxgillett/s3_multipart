@@ -1,7 +1,10 @@
+require_relative 'migration_existence_validation_helper.rb'
 require 'rails/generators'
 
 module S3Multipart
   class UploaderGenerator < Rails::Generators::Base
+    include MigrationExistenceValidationHelper
+
     desc "Generates an uploader for use with the S3 Multipart gem"
 
     source_root File.expand_path("../templates", __FILE__)
@@ -16,10 +19,16 @@ module S3Multipart
 
     def create_migrations
       # return unless options.migrations?
-      template "add_uploader_column_to_model.rb", "db/migrate/#{migration_time}_add_uploader_to_#{model}.rb"
+      prompt_if_exists for_file: migration_name, to_execute: ->{
+        template "add_uploader_column_to_model.rb", "db/migrate/#{migration_time}_#{migration_name}.rb"
+      }
     end
 
     private
+
+      def migration_name
+        "add_uploader_to_#{model}"
+      end
 
       def migration_time
         Time.now.strftime("%Y%m%d%H%M%S")
