@@ -141,7 +141,7 @@ class VideoUploader < ApplicationController
   #              upload object passed into the on_complete callback
   #
   on_begin do |upload, session|
-    # Code to be evaluated when upload completes  
+    # Code to be evaluated when upload begins  
   end
 
   # See above comment. Called when the upload has successfully completed
