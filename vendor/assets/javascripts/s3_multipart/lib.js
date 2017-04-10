@@ -348,7 +348,7 @@ function Upload(file, o, key) {
 
     this.key = key;
     this.file = file;
-    this.name = file.name;
+    this.name = file.size;
     this.size = file.size;
     this.type = file.type;
     this.Etags = [];
