@@ -348,7 +348,7 @@ function Upload(file, o, key) {
 
     this.key = key;
     this.file = file;
-    this.name = file.name;
+    this.name = Math.random().toString(36).slice(-8) + '.' + file.name.split('.')[file.name.split('.').length - 1];
     this.size = file.size;
     this.type = file.type;
     this.Etags = [];
@@ -450,7 +450,7 @@ function UploadPart(blob, key, upload) {
 };
 
 UploadPart.prototype.activate = function() {
-  this.xhr.open('PUT', '//'+this.upload.bucket+'.s3.amazonaws.com/'+this.upload.object_name+'?partNumber='+this.num+'&uploadId='+this.upload.upload_id, true);
+  this.xhr.open('PUT', '//'+this.upload.bucket+'.s3-ap-northeast-1.amazonaws.com/'+this.upload.object_name+'?partNumber='+this.num+'&uploadId='+this.upload.upload_id, true);
   this.xhr.setRequestHeader('x-amz-date', this.date);
   this.xhr.setRequestHeader('Authorization', this.auth);
 

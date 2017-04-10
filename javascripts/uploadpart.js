@@ -1,4 +1,4 @@
-// Upload part constructor 
+// Upload part constructor
 function UploadPart(blob, key, upload) {
   var part, xhr;
 
@@ -24,8 +24,8 @@ function UploadPart(blob, key, upload) {
 
 };
 
-UploadPart.prototype.activate = function() { 
-  this.xhr.open('PUT', '//'+this.upload.bucket+'.s3.amazonaws.com/'+this.upload.object_name+'?partNumber='+this.num+'&uploadId='+this.upload.upload_id, true);
+UploadPart.prototype.activate = function() {
+  this.xhr.open('PUT', '//'+this.upload.bucket+'.s3-ap-northeast-1.amazonaws.com/'+this.upload.object_name+'?partNumber='+this.num+'&uploadId='+this.upload.upload_id, true);
   this.xhr.setRequestHeader('x-amz-date', this.date);
   this.xhr.setRequestHeader('Authorization', this.auth);
 
