@@ -37,8 +37,8 @@ module S3Multipart
 
     private
 
-      def http 
-        Net::HTTP.new("#{Config.instance.bucket_name}.s3.amazonaws.com", 80)
+      def http
+        Net::HTTP.new("#{Config.instance.bucket_name}.s3-ap-northeast-1.amazonaws.com", 80)
       end
 
       def request_class
