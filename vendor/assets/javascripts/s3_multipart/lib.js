@@ -168,12 +168,13 @@ S3MP.prototype.initiateMultipart = function(upload, cb) {
   var url, body, xhr;
 
   url = '/s3_multipart/uploads';
-  body = JSON.stringify({ object_name  : upload.name,
-                          content_type : upload.type,
-                          content_size : upload.size,
-                          headers      : this.headers,
-                          context      : $(this.fileInputElement).data("context"),
-                          uploader     : $(this.fileInputElement).data("uploader")
+  body = JSON.stringify({ object_name     : upload.name,
+                          object_filename : upload.filename,
+                          content_type    : upload.type,
+                          content_size    : upload.size,
+                          headers         : this.headers,
+                          context         : $(this.fileInputElement).data("context"),
+                          uploader        : $(this.fileInputElement).data("uploader")
                         });
 
   xhr = this.createXhrRequest('POST', url);
@@ -348,6 +349,7 @@ function Upload(file, o, key) {
 
     this.key = key;
     this.file = file;
+    this.filename = file.name;
     this.name = Math.random().toString(36).slice(-8) + '.' + file.name.split('.')[file.name.split('.').length - 1];
     this.size = file.size;
     this.type = file.type;
