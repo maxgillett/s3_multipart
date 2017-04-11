@@ -1,6 +1,6 @@
 module S3Multipart
 
-  # Collection of methods to be mixed in to the Upload class.  
+  # Collection of methods to be mixed in to the Upload class.
   # Handle all communication with Amazon S3 servers
   module TransferHelpers
 
@@ -15,11 +15,13 @@ module S3Multipart
                                                              headers: options[:headers]
 
       response = Http.post url, headers: headers
-      parsed_response_body = XmlSimple.xml_in(response.body)  
+      parsed_response_body = XmlSimple.xml_in(response.body)
 
-      { "key"  => parsed_response_body["Key"][0],
+      {
+        "key"  => parsed_response_body["Key"][0],
         "upload_id"   => parsed_response_body["UploadId"][0],
-        "name" => options[:object_name] }
+        "name" => options[:object_name]
+      }
     end
 
     def sign_batch(options)
@@ -47,7 +49,7 @@ module S3Multipart
       headers[:authorization], headers[:date] = sign_request verb: 'POST', url: url, content_type: options[:content_type]
 
       response = Http.post url, {headers: headers, body: body}
-      parsed_response_body = XmlSimple.xml_in(response.body)  
+      parsed_response_body = XmlSimple.xml_in(response.body)
 
       begin
         return { location: parsed_response_body["Location"][0] }
@@ -111,7 +113,7 @@ module S3Multipart
 
       def format_part_list_in_xml(options)
         hash = Hash["Part", ""];
-        hash["Part"] = options[:parts].map do |part| 
+        hash["Part"] = options[:parts].map do |part|
           { "PartNumber" => part[:partNum], "ETag" => part[:ETag] }
         end
         hash["Part"].sort_by! {|obj| obj["PartNumber"]}
