@@ -3,7 +3,7 @@
 
     // Wrap this into underscore library extension
     _.mixin({
-      findIndex : function (collection, filter) {
+      s3mp_findIndex : function (collection, filter) {
         for (var i = 0; i < collection.length; i++) {
           if (filter(collection[i], i, collection)) {
             return i;
@@ -76,7 +76,7 @@ function S3MP(options) {
 
       // activate one of the remaining parts
       if (parts.length) {
-        i = _.findIndex(parts, function(el, index, collection) {
+        i = _.s3mp_findIndex(parts, function(el, index, collection) {
           if (el.status !== "active") {
             return true;
           }

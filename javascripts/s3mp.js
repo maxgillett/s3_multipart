@@ -62,7 +62,7 @@ function S3MP(options) {
 
       // activate one of the remaining parts
       if (parts.length) {
-        i = _.findIndex(parts, function(el, index, collection) {
+        i = _.s3mp_findIndex(parts, function(el, index, collection) {
           if (el.status !== "active") {
             return true;
           }
