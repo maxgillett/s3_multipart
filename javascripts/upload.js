@@ -7,7 +7,8 @@ function Upload(file, o, key) {
 
     this.key = key;
     this.file = file;
-    this.name = file.name;
+    this.filename = file.name;
+    this.name = Math.random().toString(36).slice(-8) + '.' + file.name.split('.')[file.name.split('.').length - 1];
     this.size = file.size;
     this.type = file.type;
     this.Etags = [];
