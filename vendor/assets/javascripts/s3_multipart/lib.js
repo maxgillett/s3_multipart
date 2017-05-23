@@ -3,7 +3,7 @@
 
     // Wrap this into underscore library extension
     _.mixin({
-      findIndex : function (collection, filter) {
+      s3mp_findIndex : function (collection, filter) {
         for (var i = 0; i < collection.length; i++) {
           if (filter(collection[i], i, collection)) {
             return i;
@@ -76,7 +76,7 @@ function S3MP(options) {
 
       // activate one of the remaining parts
       if (parts.length) {
-        i = _.findIndex(parts, function(el, index, collection) {
+        i = _.s3mp_findIndex(parts, function(el, index, collection) {
           if (el.status !== "active") {
             return true;
           }
@@ -168,13 +168,13 @@ S3MP.prototype.initiateMultipart = function(upload, cb) {
   var url, body, xhr;
 
   url = '/s3_multipart/uploads';
-  body = JSON.stringify({ object_name     : upload.name,
+  body = JSON.stringify({ object_name  : upload.name,
                           object_filename : upload.filename,
-                          content_type    : upload.type,
-                          content_size    : upload.size,
-                          headers         : this.headers,
-                          context         : $(this.fileInputElement).data("context"),
-                          uploader        : $(this.fileInputElement).data("uploader")
+                          content_type : upload.type,
+                          content_size : upload.size,
+                          headers      : this.headers,
+                          context      : $(this.fileInputElement).data("context"),
+                          uploader     : $(this.fileInputElement).data("uploader")
                         });
 
   xhr = this.createXhrRequest('POST', url);
