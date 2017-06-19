@@ -6,11 +6,14 @@ module S3Multipart
         upload = Upload.create(params)
         upload.execute_callback(:begin, session)
         response = upload.to_json
+        flash[:success] = "正常にアップロードされました"
       rescue FileTypeError, FileSizeError => e
         response = {error: e.message}
+        flash.now[:alert] = e.message
       rescue => e
         logger.error "EXC: #{e.message}"
         response = { error: t("s3_multipart.errors.create") }
+        flash.now[:alert] = e.message
       ensure
         render :json => response
       end
